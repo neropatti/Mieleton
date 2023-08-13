@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=3 uid="uid://ci0dsl45p20cn"]
+
+[ext_resource type="Script" path="res://dl.gd" id="1_kdtkv"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_kdtkv")
+
+[node name="HTTPRequest" type="HTTPRequest" parent="."]
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[connection signal="request_completed" from="HTTPRequest" to="." method="_on_http_request_request_completed"]

@@ -1,0 +1,5 @@
+TODO: Dialogue for putting in a youtube video link
+Then we want to fetch the thumbnail, title, and maybe some other shti XD
+
+TODO: Option for downloading the video
+TOOD: Option for auto-fetching new videos from some channels & downloading them
