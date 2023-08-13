@@ -2,4 +2,9 @@ TODO: Dialogue for putting in a youtube video link
 Then we want to fetch the thumbnail, title, and maybe some other shti XD
 
 TODO: Option for downloading the video
-TOOD: Option for auto-fetching new videos from some channels & downloading them
+TODO: Option for auto-fetching new videos from some channels & downloading them
+
+TODO: General GUI for pasting in links and browsing the listed entried
+TODO: Saving the current entries
+TODO: Loading entries from disk
+TODO: Opening links from entries

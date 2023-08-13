@@ -1,21 +1,28 @@
-[gd_scene load_steps=2 format=3 uid="uid://ci0dsl45p20cn"]
+[gd_scene load_steps=3 format=3 uid="uid://ci0dsl45p20cn"]
 
 [ext_resource type="Script" path="res://dl.gd" id="1_kdtkv"]
+[ext_resource type="Texture2D" uid="uid://bvf1geg47uasc" path="res://icon.svg" id="2_ujp8r"]
 
-[node name="Control" type="Control"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="video" type="VBoxContainer"]
+offset_right = 226.0
+offset_bottom = 279.0
 script = ExtResource("1_kdtkv")
 
-[node name="HTTPRequest" type="HTTPRequest" parent="."]
+[node name="title" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 1
+theme_override_font_sizes/font_size = 24
+text = "sample video title"
+horizontal_alignment = 1
+clip_text = true
 
-[node name="TextureRect" type="TextureRect" parent="."]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+[node name="thumbnail" type="TextureRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+texture = ExtResource("2_ujp8r")
+expand_mode = 5
 
-[connection signal="request_completed" from="HTTPRequest" to="." method="_on_http_request_request_completed"]
+[node name="thumbnail fetcher" type="HTTPRequest" parent="."]
+
+[connection signal="request_completed" from="thumbnail fetcher" to="." method="_on_thumbnail_fetcher_request_completed"]
