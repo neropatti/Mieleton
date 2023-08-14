@@ -5,6 +5,22 @@ extends VBoxContainer
 const video_thumbnail_url : String = "https://img.youtube.com/vi/%s/hqdefault.jpg"
 var video_id : String = "gVC-nhVSH2c"
 
+func set_link(link : String) -> bool:
+	var video_id := get_video_id(link)
+	set_video_id(video_id)
+	return true
+
+func get_video_id(link_or_id : String) -> String:
+	link_or_id = trim_prefixes(link_or_id, ["www.", "youtube.com/watch?v=", "youtu.be/"])
+	link_or_id = link_or_id.get_slice("&", 0)
+	assert(link_or_id.length() == 11) # Youtube video IDs are 11 characters long
+	return link_or_id
+
+func trim_prefixes(string : String, prefixes : Array [String]) -> String:
+	for prefix in prefixes:
+		string = string.trim_prefix(prefix)
+	return string
+
 ## Set the video ID and refresh things that depend on it (currently just the thumbnail)
 func set_video_id(id : String):
 	video_id = id

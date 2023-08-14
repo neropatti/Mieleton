@@ -8,3 +8,12 @@ TODO: General GUI for pasting in links and browsing the listed entried
 TODO: Saving the current entries
 TODO: Loading entries from disk
 TODO: Opening links from entries
+
+TODO: Generic rich link embeds
+
+<meta property="og:site_name" content="YouTube">
+<meta property="og:url" content="https://www.youtube.com/watch?v=RoYUfn4W-qU">
+<meta property="og:title" content="eSports Has Ruined Gaming">
+<meta property="og:image" content="https://i.ytimg.com/vi/RoYUfn4W-qU/maxresdefault.jpg">
+<meta property="og:image:width" content="1280"><meta property="og:image:height" content="720">
+<meta property="og:description" content="For games like Overwatch, League of Legends, Street Fighter and VALORANT, a scenario where their games die and fail as an eSport is their developers absolute...">

@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://bvf1geg47uasc" path="res://icon.svg" id="2_ujp8r"]
 
 [node name="video" type="VBoxContainer"]
+custom_minimum_size = Vector2(255, 255)
 offset_right = 226.0
 offset_bottom = 279.0
 script = ExtResource("1_kdtkv")
@@ -20,8 +21,10 @@ clip_text = true
 [node name="thumbnail" type="TextureRect" parent="."]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_vertical = 3
 texture = ExtResource("2_ujp8r")
 expand_mode = 5
+stretch_mode = 4
 
 [node name="thumbnail fetcher" type="HTTPRequest" parent="."]
 
