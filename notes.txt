@@ -17,3 +17,41 @@ TODO: Generic rich link embeds
 <meta property="og:image" content="https://i.ytimg.com/vi/RoYUfn4W-qU/maxresdefault.jpg">
 <meta property="og:image:width" content="1280"><meta property="og:image:height" content="720">
 <meta property="og:description" content="For games like Overwatch, League of Legends, Street Fighter and VALORANT, a scenario where their games die and fail as an eSport is their developers absolute...">
+
+So basically I want to parse the entire webpage that I receive, and take note of these meta tags
+For normal sites, convert to UTF-8, and then just go through the string XD
+
+What's the best way to find these tags? If I use some built-in methods, I could end up doing useless work where I parse
+through the same text multiple times, when the stuff could be done in one pass
+
+String.find() seems to be a suitable candinate, since you can pass in the start of the search into it
+So, find the first instance of "<meta" or "<meta property", and then check if it's about something we care :)
+Also ig I should check if the tag closes properly or something
+
+Like, somehow I want to avoid user-input on the page from being parsed as these legitimate tags...
+Do I have to properly parse the HTML? Eh, kinda cringe. Probably just do a naïve approach for now, and do a proper
+one later/when issues arise XD
+
+I could look for some ready-made html parsers I guess..? This kind of seems like a rabbit hole to me
+
+Now, the only site-specific code I would need would be for the archival side. I can always have a naïve thing
+that just saves the entire HTML page as text and do nothing else, but that will not include images & video (or external scripts)
+
+For youtube, I obviously want to save the video if archival is attempted.
+How do I do this?
+
+Find a working version of youtube-dl and just use that I guess? Or try to make the functionality myself? IDK
+
+Well, I guess I will see after I get the basic rich embeds working XD
+
+
+Search?
+Honestly no idea (maybe ask iFire about search engine stuff..?)
+
+Tags?
+Just allow the user to type some tags when saving a link, and highlight matching tags for autocompletion shit
+
+Allow for merging tags, or aliasing them. This should probably be done non-destructively, so the tags just match
+each other when searching, but under the hood they are still separate things
+
+
