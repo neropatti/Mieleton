@@ -26,6 +26,7 @@ texture = ExtResource("2_ujp8r")
 expand_mode = 5
 stretch_mode = 4
 
-[node name="thumbnail fetcher" type="HTTPRequest" parent="."]
+[node name="webpage fetcher" type="HTTPRequest" parent="."]
+unique_name_in_owner = true
 
-[connection signal="request_completed" from="thumbnail fetcher" to="." method="_on_thumbnail_fetcher_request_completed"]
+[connection signal="request_completed" from="webpage fetcher" to="." method="_on_webpage_fetcher_request_completed"]
