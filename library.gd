@@ -2,19 +2,20 @@ extends Control
 
 var link_entry := preload("res://dl.tscn")
 
-# TODO: Figure out what domain the link is from
-# TODO: Do specific actions according to the domain
-
-# I want to match youtube.com and www.youtube.com
-# but for some domains, like app.element.com, the part before the main domain is important
-# hmm
-
-# I guess I can just have 2 entries on a dictionary that covers both XD
-
+func _ready():
+	if FileAccess.file_exists("user://links.txt"):
+		print("Links file found!")
+		var file := FileAccess.open("user://links.txt", FileAccess.READ)
+		while file.get_position() < file.get_length():
+			var line := file.get_line()
+			print(line)
+	else:
+		printerr("Links file NOT found!")
+		
+		var file := FileAccess.open("user://links.txt", FileAccess.WRITE)
+		file.store_line("LOL")
 
 func _on_link_input_text_submitted(link : String):
-#	print(link)
-#	print(get_youtube_video_id(link))
 	%"link input".text = ""
 	var new_link_entry := link_entry.instantiate()
 	%items.add_child(new_link_entry)

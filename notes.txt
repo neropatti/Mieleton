@@ -55,3 +55,10 @@ Allow for merging tags, or aliasing them. This should probably be done non-destr
 each other when searching, but under the hood they are still separate things
 
 
+TODO: Centralize fetching logic to better implement rate limits, and cache things locally
+
+TODO: A file for listing all cached images
+TODO: Cache images
+TODO: Save link list
+
+TODO: Insert multiple links, newline marks start of new link

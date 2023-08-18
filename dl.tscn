@@ -17,16 +17,21 @@ theme_override_font_sizes/font_size = 24
 text = "sample video title"
 horizontal_alignment = 1
 clip_text = true
+text_overrun_behavior = 3
 
 [node name="thumbnail" type="TextureRect" parent="."]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 texture = ExtResource("2_ujp8r")
-expand_mode = 5
+expand_mode = 3
 stretch_mode = 4
 
 [node name="webpage fetcher" type="HTTPRequest" parent="."]
 unique_name_in_owner = true
 
+[node name="thumbnail fetcher" type="HTTPRequest" parent="."]
+unique_name_in_owner = true
+
 [connection signal="request_completed" from="webpage fetcher" to="." method="_on_webpage_fetcher_request_completed"]
+[connection signal="request_completed" from="thumbnail fetcher" to="." method="_on_thumbnail_fetcher_request_completed"]

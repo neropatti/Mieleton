@@ -12,6 +12,8 @@ config_version=5
 
 config/name="Mieletön"
 run/main_scene="res://library.tscn"
+config/use_custom_user_dir=true
+config/custom_user_dir_name="mieletön"
 config/features=PackedStringArray("4.1", "GL Compatibility")
 config/icon="res://icon.svg"
 
