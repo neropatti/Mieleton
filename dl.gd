@@ -1,23 +1,44 @@
 extends VBoxContainer
 
-var link : String
-var thumbnail_link : String
+var tags : Array [StringName]
 
-func set_link(new_link : String) -> bool:
+var link : String:
+	set(value):
+		var value_changed : bool = link != value
+		link = value
+		if value_changed:
+			data_updated.emit()
+
+var title : String:
+	set(value):
+		var value_changed : bool = title != value
+		title = value
+		if value_changed:
+			data_updated.emit()
+
+var thumbnail_link : String:
+	set(value):
+		var value_changed : bool = thumbnail_link != value
+		thumbnail_link = value
+		if value_changed:
+			data_updated.emit()
+
+signal data_updated
+
+func set_link(new_link : String) -> int:
 	link = new_link
-	# TODO: Detect if the page is a webpage, image, or something else!
-	# And then, TODO: Make the request with the correct shitter!
-	%"webpage fetcher".request(new_link)
-	return true
+	set_title(new_link)
+	return %"webpage fetcher".request(new_link)
 
 func trim_prefixes(string : String, prefixes : Array [String]) -> String:
 	for prefix in prefixes:
 		string = string.trim_prefix(prefix)
 	return string
 
-func set_title(title : String):
-	%title.text = title
-	%title.tooltip_text = title
+func set_title(new_title : String):
+	title = new_title
+	%title.text = new_title
+	%title.tooltip_text = new_title
 
 ## Load an image from a PackedByteArray. Tries to parse the data as a JPG, PNG, WEBP, TGA & BMP image, returning the first one that succeeds.
 func load_image_from_buffer(buffer : PackedByteArray) -> Image:
@@ -39,6 +60,8 @@ func load_image_from_buffer(buffer : PackedByteArray) -> Image:
 func parse_webpage(body : PackedByteArray):
 	
 	var page : String = body.get_string_from_utf8()
+	var f := FileAccess.open("user://asd.txt", FileAccess.WRITE)
+	f.store_string(page)
 	var info : Dictionary = {}
 	
 	var i : int = 0
@@ -73,7 +96,19 @@ func parse_webpage(body : PackedByteArray):
 	if info.has("og:image"):
 		# TODO: Do some checks to see that this URL is valid
 		# Potential security implications?
-		%"thumbnail fetcher".request(info["og:image"])
+		set_thumbnail(info["og:image"])
+
+func set_thumbnail(thumbnail_url : String):
+		thumbnail_link = thumbnail_url
+		# TODO: Do some checks to see that this URL is valid
+		# Potential security implications?
+		if Cache.has_cache_entry(thumbnail_link, "image"):
+			var img_data : PackedByteArray = Cache.get_cache_entry(thumbnail_link)
+			var img := load_image_from_buffer(img_data)
+			var texture := ImageTexture.create_from_image(img)
+			%thumbnail.texture = texture
+		else:
+			%"thumbnail fetcher".request(thumbnail_link)
 
 func is_valid_meta_tag(meta_tag : String) -> bool:
 	if meta_tag.contains("property=\"") and meta_tag.contains("content=\""):
@@ -100,6 +135,10 @@ func parse_meta_tag(meta_tag : String) -> Array [String]:
 
 func parse_image(body : PackedByteArray):
 	var img := load_image_from_buffer(body)
+	if img == null or not is_instance_valid(img):
+		return
+	print("Img: %s" % img.get_size())
+	Cache.create_cache_entry(thumbnail_link, img)
 	var texture := ImageTexture.create_from_image(img)
 	%thumbnail.texture = texture
 
@@ -116,6 +155,7 @@ func _on_webpage_fetcher_request_completed(result : int, response_code : int, he
 			if header.contains("text/html"):
 				parse_webpage(body)
 			elif header.contains("image"):
+				thumbnail_link = link
 				parse_image(body)
 				var a : int = link.get_slice_count("/")
 				set_title(link.get_slice("/", a - 1))
@@ -131,3 +171,19 @@ func _on_thumbnail_fetcher_request_completed(result : int, response_code : int, 
 				parse_image(body)
 			else:
 				printerr("Invalid/unhandled header: %s" % header)
+
+func _ready():
+	data_updated.connect(save_to_file)
+
+const save_path : String = "user://entries/"
+
+func save_to_file():
+	var file := FileAccess.open(link_to_path(link), FileAccess.WRITE)
+	file.store_line(link)
+	file.store_line(title)
+	file.store_line(thumbnail_link)
+	for tag in tags:
+		file.store_line(tag)
+
+func link_to_path(link : String) -> String:
+	return save_path + link.replace("/", "_slash_")
