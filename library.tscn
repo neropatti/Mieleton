@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://cyvb7gexv37hq"]
+[gd_scene load_steps=3 format=3 uid="uid://cyvb7gexv37hq"]
 
 [ext_resource type="Script" path="res://library.gd" id="1_c4ujj"]
+[ext_resource type="Script" path="res://tag entry.gd" id="2_kkd7k"]
 
 [node name="library" type="Control"]
 layout_mode = 3
@@ -34,4 +35,44 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
+[node name="tag entry" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_kkd7k")
+
+[node name="ColorRect" type="ColorRect" parent="tag entry"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.909804)
+
+[node name="CenterContainer" type="CenterContainer" parent="tag entry"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="tag entry/CenterContainer"]
+custom_minimum_size = Vector2(500, 500)
+layout_mode = 2
+
+[node name="tag input" type="LineEdit" parent="tag entry/CenterContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Label" type="Label" parent="tag entry/CenterContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
 [connection signal="text_submitted" from="VBoxContainer/link input" to="." method="_on_link_input_text_submitted"]
+[connection signal="text_changed" from="tag entry/CenterContainer/VBoxContainer/tag input" to="tag entry" method="_on_tag_input_text_changed"]
+[connection signal="text_submitted" from="tag entry/CenterContainer/VBoxContainer/tag input" to="tag entry" method="_on_tag_input_text_submitted"]
