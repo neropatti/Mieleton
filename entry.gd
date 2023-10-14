@@ -25,10 +25,11 @@ var thumbnail_link : String:
 
 signal data_updated
 
-func set_link(new_link : String) -> int:
+func set_link(new_link : String):
 	link = new_link
 	set_title(new_link)
-	return %"webpage fetcher".request(new_link)
+	var request_result : Array = await UrlFetcher.fetch_url(new_link)
+	_on_webpage_fetcher_request_completed(request_result[0], request_result[1], request_result[2], request_result[3])
 
 func trim_prefixes(string : String, prefixes : Array [String]) -> String:
 	for prefix in prefixes:
@@ -108,7 +109,9 @@ func set_thumbnail(thumbnail_url : String):
 			var texture := ImageTexture.create_from_image(img)
 			%thumbnail.texture = texture
 		else:
-			%"thumbnail fetcher".request(thumbnail_link)
+			var request_result : Array = await UrlFetcher.fetch_url(thumbnail_link)
+			if request_result[0] == OK:
+				_on_thumbnail_fetcher_request_completed(request_result[0], request_result[1], request_result[2], request_result[3])
 
 func is_valid_meta_tag(meta_tag : String) -> bool:
 	if meta_tag.contains("property=\"") and meta_tag.contains("content=\""):
@@ -178,12 +181,23 @@ func _ready():
 const save_path : String = "user://entries/"
 
 func save_to_file():
-	var file := FileAccess.open(link_to_path(link), FileAccess.WRITE)
-	file.store_line(link)
-	file.store_line(title)
-	file.store_line(thumbnail_link)
-	for tag in tags:
-		file.store_line(tag)
+	# TODO: Just have a unique ID for each entry instead of saving based on the link
+	# I might want to have duplicate entries or something :)
+	
+	# For the cache though, it makes sense to have no duplicates. XD
+	
+	var file := FileAccess.open(tidbits.link_to_path(link, save_path), FileAccess.WRITE)
+	file.store_string(JSON.stringify({
+		"link" : link,
+		"title" : title,
+		"thumbnail_link" : thumbnail_link,
+		"tags" : tags,
+	}))
+	print("SAVED")
 
-func link_to_path(link : String) -> String:
-	return save_path + link.replace("/", "_slash_")
+signal clicked
+
+func _on_gui_input(event):
+	if event is InputEventMouseButton:
+		if event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
+			clicked.emit(self)

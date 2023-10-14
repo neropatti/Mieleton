@@ -7,7 +7,7 @@ func _ready():
 	DirAccess.make_dir_recursive_absolute("user://entries/")
 
 func create_cache_entry(source_link : String, data) -> void:
-	var save_path = link_to_path(source_link)
+	var save_path = tidbits.link_to_path(source_link, cache_path)
 	var meta_file := FileAccess.open(save_path + "_meta", FileAccess.WRITE)
 	if data is Image:
 		meta_file.store_line("image")
@@ -19,7 +19,7 @@ func create_cache_entry(source_link : String, data) -> void:
 		file.store_var(data)
 
 func has_cache_entry(source_link : String, type : String = "") -> bool:
-	var save_path = link_to_path(source_link)
+	var save_path = tidbits.link_to_path(source_link, cache_path)
 	if FileAccess.file_exists(save_path) and FileAccess.file_exists(save_path + "_meta"):
 		if type.is_empty():
 			return true
@@ -33,8 +33,5 @@ func has_cache_entry(source_link : String, type : String = "") -> bool:
 		return false
 
 func get_cache_entry(source_link : String) -> PackedByteArray:
-	var save_path := link_to_path(source_link)
+	var save_path := tidbits.link_to_path(source_link, cache_path)
 	return FileAccess.get_file_as_bytes(save_path)
-
-func link_to_path(link : String) -> String:
-	return cache_path + link.replace("/", "_slash_")
