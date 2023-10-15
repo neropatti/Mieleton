@@ -24,6 +24,14 @@ grow_vertical = 2
 unique_name_in_owner = true
 layout_mode = 2
 
+[node name="ScrollContainer2" type="ScrollContainer" parent="VBoxContainer"]
+layout_mode = 2
+vertical_scroll_mode = 0
+
+[node name="autofill suggestion list" type="HBoxContainer" parent="VBoxContainer/ScrollContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
@@ -92,6 +100,7 @@ size_flags_horizontal = 3
 unique_name_in_owner = true
 layout_mode = 2
 
+[connection signal="text_changed" from="VBoxContainer/link input" to="." method="_on_link_input_text_changed"]
 [connection signal="text_submitted" from="VBoxContainer/link input" to="." method="_on_link_input_text_submitted"]
 [connection signal="text_changed" from="tag entry/CenterContainer/VBoxContainer/tag input" to="tag entry" method="_on_tag_input_text_changed"]
 [connection signal="text_submitted" from="tag entry/CenterContainer/VBoxContainer/tag input" to="tag entry" method="_on_tag_input_text_submitted"]

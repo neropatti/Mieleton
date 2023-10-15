@@ -2,23 +2,6 @@ extends Control
 
 var link_entry := preload("res://entry.tscn")
 
-# Actually, we don't need to open the view for links we had open the last time..?
-# Still probably a good idea to have timestamps on the links
-# Also if someone has thousands of links, we don't want to just load them all to only show the most recent ones
-# ALSO if someone has thousands of links with a certain tag, we don't want to load all of those either, probably
-# How do you do this efficiently? XD
-# I guess tag entries could be a separate thing..?
-# OR
-# Just make it work for now XDXDXD
-
-# TODO: Assinging tags and doing basic search..?
-# I guess we also do need to kind of just view the posts lol
-
-# Make link entries a lightweight class thingy?
-# Would allow jamming all the entries into memory that way (I mean I guess I can just do it with a dict lol)
-
-# WELL, don't solve non-existant problems, make mistakes instead
-
 func _ready():
 	# TODO: Ditch the links file, just iterate over files in the "entries" directory instead :)
 	var all_tags : Dictionary = {}
@@ -35,7 +18,9 @@ func _ready():
 		for i in tags.size():
 			var tag := StringName(_tags[i])
 			tags[i] = tag
-			all_tags[tag] = true
+			if not all_tags.has(tag):
+				all_tags[tag] = 0
+			all_tags[tag] += 1
 		var new_link_entry := link_entry.instantiate()
 		%items.add_child(new_link_entry)
 		new_link_entry.link = link
@@ -45,10 +30,8 @@ func _ready():
 		new_link_entry.tags = tags
 		new_link_entry.filename = file_name
 		new_link_entry.clicked.connect(open_tag_editor)
-	var xd : Array [StringName] = []
-	for tag in all_tags.keys():
-		xd.append(tag)
-	%"tag entry".tags = xd
+	%"tag entry".add_tags(all_tags)
+	_on_link_input_text_changed("")
 
 func _on_link_input_text_submitted(link : String):
 	%"link input".text = ""
@@ -57,6 +40,7 @@ func _on_link_input_text_submitted(link : String):
 	%items.add_child(new_link_entry)
 	new_link_entry.set_link(link)
 	new_link_entry.clicked.connect(open_tag_editor)
+	_on_link_input_text_changed("")
 
 func trim_prefixes(string : String, prefixes : Array [String]) -> String:
 	for prefix in prefixes:
@@ -71,3 +55,32 @@ func link_to_path(link : String) -> String:
 func open_tag_editor(entry : Node):
 	%"tag entry".visible = true
 	%"tag entry".selected_entry = entry
+
+func _on_link_input_text_changed(new_text : String):
+	for child in %"autofill suggestion list".get_children():
+		child.queue_free()
+	
+	for tag in %"tag entry".tags:
+		if tag is StringName or tag is String:
+			if tag.begins_with(new_text):
+				var new_button := CheckBox.new()
+				%"autofill suggestion list".add_child(new_button)
+				new_button.text = tag
+				new_button.toggled.connect(add_tag_filter.bind(tag))
+		else:
+			printerr("Invalid tag type?!")
+			breakpoint
+
+var active_tag_filters : Dictionary
+
+func add_tag_filter(enabled : bool, tag : String):
+	if enabled:
+		active_tag_filters[tag] = true
+	else:
+		active_tag_filters.erase(tag)
+	for entry in %items.get_children():
+		entry.visible = true
+		for tagg in active_tag_filters:
+			if not entry.tags.has(tagg):
+				entry.visible = false
+				break
