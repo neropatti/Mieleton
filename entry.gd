@@ -2,26 +2,11 @@ extends VBoxContainer
 
 var tags : Array [StringName]
 
-var link : String:
-	set(value):
-		var value_changed : bool = link != value
-		link = value
-		if value_changed:
-			data_updated.emit()
+var link : String
+var title : String
+var thumbnail_link : String
 
-var title : String:
-	set(value):
-		var value_changed : bool = title != value
-		title = value
-		if value_changed:
-			data_updated.emit()
-
-var thumbnail_link : String:
-	set(value):
-		var value_changed : bool = thumbnail_link != value
-		thumbnail_link = value
-		if value_changed:
-			data_updated.emit()
+var filename : String
 
 signal data_updated
 
@@ -29,17 +14,15 @@ func set_link(new_link : String):
 	link = new_link
 	set_title(new_link)
 	var request_result : Array = await UrlFetcher.fetch_url(new_link)
+	if request_result[0] != OK or request_result[1] != 200:
+		return
 	_on_webpage_fetcher_request_completed(request_result[0], request_result[1], request_result[2], request_result[3])
-
-func trim_prefixes(string : String, prefixes : Array [String]) -> String:
-	for prefix in prefixes:
-		string = string.trim_prefix(prefix)
-	return string
 
 func set_title(new_title : String):
 	title = new_title
 	%title.text = new_title
 	%title.tooltip_text = new_title
+	data_updated.emit()
 
 ## Load an image from a PackedByteArray. Tries to parse the data as a JPG, PNG, WEBP, TGA & BMP image, returning the first one that succeeds.
 func load_image_from_buffer(buffer : PackedByteArray) -> Image:
@@ -101,6 +84,7 @@ func parse_webpage(body : PackedByteArray):
 
 func set_thumbnail(thumbnail_url : String):
 		thumbnail_link = thumbnail_url
+		data_updated.emit()
 		# TODO: Do some checks to see that this URL is valid
 		# Potential security implications?
 		if Cache.has_cache_entry(thumbnail_link, "image"):
@@ -146,7 +130,7 @@ func parse_image(body : PackedByteArray):
 	%thumbnail.texture = texture
 
 func _on_webpage_fetcher_request_completed(result : int, response_code : int, headers : PackedStringArray, body : PackedByteArray):
-	print("Webpage headers: ", headers)
+#	print("Webpage headers: ", headers)
 	if result != OK or response_code != 200:
 		printerr("%s failed to load web data!" % self)
 		return
@@ -184,9 +168,12 @@ func save_to_file():
 	# TODO: Just have a unique ID for each entry instead of saving based on the link
 	# I might want to have duplicate entries or something :)
 	
+	if filename.is_empty():
+		return
+	
 	# For the cache though, it makes sense to have no duplicates. XD
 	
-	var file := FileAccess.open(tidbits.link_to_path(link, save_path), FileAccess.WRITE)
+	var file := FileAccess.open(save_path + filename, FileAccess.WRITE)
 	file.store_string(JSON.stringify({
 		"link" : link,
 		"title" : title,

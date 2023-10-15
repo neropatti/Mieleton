@@ -80,21 +80,17 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="tag list" type="Label" parent="tag entry/CenterContainer/VBoxContainer/HBoxContainer/ScrollContainer"]
+[node name="global tag matches" type="VBoxContainer" parent="tag entry/CenterContainer/VBoxContainer/HBoxContainer/ScrollContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
 
 [node name="ScrollContainer2" type="ScrollContainer" parent="tag entry/CenterContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="existing tags" type="Label" parent="tag entry/CenterContainer/VBoxContainer/HBoxContainer/ScrollContainer2"]
+[node name="entry tag matches" type="VBoxContainer" parent="tag entry/CenterContainer/VBoxContainer/HBoxContainer/ScrollContainer2"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
 
 [connection signal="text_submitted" from="VBoxContainer/link input" to="." method="_on_link_input_text_submitted"]
 [connection signal="text_changed" from="tag entry/CenterContainer/VBoxContainer/tag input" to="tag entry" method="_on_tag_input_text_changed"]
