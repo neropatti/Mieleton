@@ -95,3 +95,8 @@ func _on_delete_entry_pressed():
 func _on_exit_editing_mode_pressed():
 	selected_entry = null
 	self.visible = false
+
+func _on_thumbnail_gui_input(event):
+	if event is InputEventMouseButton:
+		if event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
+			OS.shell_open(selected_entry.link)

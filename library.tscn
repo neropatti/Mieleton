@@ -98,6 +98,7 @@ alignment = 1
 unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
+mouse_filter = 0
 expand_mode = 1
 stretch_mode = 5
 
@@ -132,5 +133,6 @@ layout_mode = 2
 [connection signal="pressed" from="entry editing/CenterContainer/VBoxContainer/HBoxContainer2/delete entry" to="entry editing" method="_on_delete_entry_pressed"]
 [connection signal="focus_exited" from="entry editing/CenterContainer/VBoxContainer/name edit" to="entry editing" method="_on_name_edit_focus_exited"]
 [connection signal="text_submitted" from="entry editing/CenterContainer/VBoxContainer/name edit" to="entry editing" method="_on_name_edit_text_submitted"]
+[connection signal="gui_input" from="entry editing/CenterContainer/VBoxContainer/thumbnail" to="entry editing" method="_on_thumbnail_gui_input"]
 [connection signal="text_changed" from="entry editing/CenterContainer/VBoxContainer/tag input" to="entry editing" method="_on_tag_input_text_changed"]
 [connection signal="text_submitted" from="entry editing/CenterContainer/VBoxContainer/tag input" to="entry editing" method="_on_tag_input_text_submitted"]
