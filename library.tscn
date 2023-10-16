@@ -92,6 +92,7 @@ text = "Delete entry"
 [node name="name edit" type="LineEdit" parent="entry editing/CenterContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+placeholder_text = "entry name"
 alignment = 1
 
 [node name="thumbnail" type="TextureRect" parent="entry editing/CenterContainer/VBoxContainer"]
@@ -113,6 +114,7 @@ horizontal_alignment = 1
 [node name="tag input" type="LineEdit" parent="entry editing/CenterContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+placeholder_text = "search for tags..."
 
 [node name="HBoxContainer" type="HBoxContainer" parent="entry editing/CenterContainer/VBoxContainer"]
 layout_mode = 2

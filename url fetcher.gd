@@ -8,6 +8,7 @@ func fetch_url(url : String) -> Array:
 		var web_request : HTTPRequest = active_web_requests[url]
 		return await web_request.request_completed
 	var new_web_request := HTTPRequest.new()
+	new_web_request.timeout = 20.0
 	add_child(new_web_request)
 	var err := new_web_request.request(url)
 	if err != OK:
