@@ -11,9 +11,13 @@ func _ready():
 	if FileAccess.file_exists("user://tags"):
 		tags = JSON.parse_string(FileAccess.get_file_as_string("user://tags"))
 
-var selected_entry : Node:
+var selected_entry : library_entry:
 	set(value):
+		if value == null:
+			return
 		selected_entry = value
+		%thumbnail.texture = value.thumbnail_texture
+		%"name edit".text = value.title
 		_on_tag_input_text_changed("")
 
 func _unhandled_input(event):
@@ -21,6 +25,7 @@ func _unhandled_input(event):
 		return
 	if event.is_action_pressed("ui_cancel"):
 		self.visible = false
+		selected_entry = null
 
 func _on_tag_input_text_changed(new_text : String):
 	var new_tag := StringName(new_text.to_lower())
@@ -29,6 +34,8 @@ func _on_tag_input_text_changed(new_text : String):
 			child.queue_free()
 	for tag in tags:
 		if tag.begins_with(new_tag):
+			if selected_entry.tags.has(tag):
+				continue
 			var new_button := Button.new()
 			new_button.text = tag
 			%"global tag matches".add_child(new_button)
@@ -66,3 +73,26 @@ func _on_tag_input_text_submitted(new_text : String):
 func save_to_file():
 	var file := FileAccess.open("user://tags", FileAccess.WRITE)
 	file.store_string(JSON.stringify(tags))
+
+func _on_name_edit_text_submitted(new_text : String):
+	if selected_entry == null:
+		print("Selected entry is null?")
+		return
+	selected_entry.set_title(new_text)
+	selected_entry.save_to_file()
+
+func _on_name_edit_focus_exited():
+	if selected_entry == null:
+		print("Selected entry is null?")
+		return
+	selected_entry.set_title(%"name edit".text)
+	selected_entry.save_to_file()
+
+func _on_delete_entry_pressed():
+	selected_entry.delete_from_disk_and_queue_free()
+	selected_entry = null
+	self.visible = false
+
+func _on_exit_editing_mode_pressed():
+	selected_entry = null
+	self.visible = false

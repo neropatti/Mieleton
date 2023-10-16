@@ -3,7 +3,6 @@ extends Control
 var link_entry := preload("res://entry.tscn")
 
 func _ready():
-	# TODO: Ditch the links file, just iterate over files in the "entries" directory instead :)
 	var all_tags : Dictionary = {}
 	for file_name in DirAccess.get_files_at("user://entries/"):
 		assert(FileAccess.file_exists("user://entries/" + file_name))
@@ -30,7 +29,7 @@ func _ready():
 		new_link_entry.tags = tags
 		new_link_entry.filename = file_name
 		new_link_entry.clicked.connect(open_tag_editor)
-	%"tag entry".add_tags(all_tags)
+	%"entry editing".add_tags(all_tags)
 	_on_link_input_text_changed("")
 
 func _on_link_input_text_submitted(link : String):
@@ -53,23 +52,29 @@ func link_to_path(link : String) -> String:
 	return save_path + link.replace("/", "_slash_")
 
 func open_tag_editor(entry : Node):
-	%"tag entry".visible = true
-	%"tag entry".selected_entry = entry
+	%"entry editing".visible = true
+	%"entry editing".selected_entry = entry
 
 func _on_link_input_text_changed(new_text : String):
 	for child in %"autofill suggestion list".get_children():
 		child.queue_free()
 	
-	for tag in %"tag entry".tags:
-		if tag is StringName or tag is String:
-			if tag.begins_with(new_text):
-				var new_button := CheckBox.new()
-				%"autofill suggestion list".add_child(new_button)
-				new_button.text = tag
-				new_button.toggled.connect(add_tag_filter.bind(tag))
-		else:
-			printerr("Invalid tag type?!")
-			breakpoint
+	for tag in %"entry editing".tags:
+		if active_tag_filters.has(tag):
+			var new_button := CheckBox.new()
+			%"autofill suggestion list".add_child(new_button)
+			new_button.text = tag
+			new_button.button_pressed = true
+			new_button.toggled.connect(add_tag_filter.bind(tag))
+	
+	for tag in %"entry editing".tags:
+		if active_tag_filters.has(tag):
+			continue # This tag is already present earlier on the list
+		if tag.begins_with(new_text):
+			var new_button := CheckBox.new()
+			%"autofill suggestion list".add_child(new_button)
+			new_button.text = tag
+			new_button.toggled.connect(add_tag_filter.bind(tag))
 
 var active_tag_filters : Dictionary
 

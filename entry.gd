@@ -1,10 +1,13 @@
 extends VBoxContainer
+class_name library_entry
 
 var tags : Array [StringName]
 
 var link : String
 var title : String
 var thumbnail_link : String
+
+var thumbnail_texture : Texture2D
 
 var filename : String
 
@@ -92,6 +95,7 @@ func set_thumbnail(thumbnail_url : String):
 			var img := load_image_from_buffer(img_data)
 			var texture := ImageTexture.create_from_image(img)
 			%thumbnail.texture = texture
+			thumbnail_texture = texture
 		else:
 			var request_result : Array = await UrlFetcher.fetch_url(thumbnail_link)
 			if request_result[0] == OK:
@@ -128,6 +132,7 @@ func parse_image(body : PackedByteArray):
 	Cache.create_cache_entry(thumbnail_link, img)
 	var texture := ImageTexture.create_from_image(img)
 	%thumbnail.texture = texture
+	thumbnail_texture = texture
 
 func _on_webpage_fetcher_request_completed(result : int, response_code : int, headers : PackedStringArray, body : PackedByteArray):
 #	print("Webpage headers: ", headers)
@@ -181,6 +186,11 @@ func save_to_file():
 		"tags" : tags,
 	}))
 	print("SAVED")
+
+func delete_from_disk_and_queue_free():
+	assert(not filename.is_empty())
+	DirAccess.remove_absolute(save_path + filename)
+	queue_free()
 
 signal clicked
 
