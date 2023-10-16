@@ -137,5 +137,7 @@ func add_tag_filter(state : state_cycling_button.states, tag : String):
 		entry.visible = true
 		for tagg in active_tag_filters:
 			if active_tag_filters[tagg] != entry.tags.has(tagg):
+				# If this tag should be included and the entry does not have it, hide the entry.
+				# If this tag should be excluded and the entry has it, hide the entry.
 				entry.visible = false
 				break
