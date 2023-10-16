@@ -55,6 +55,12 @@ func tag_sort(a : String, b : String, search : String) -> bool:
 	else:
 		return false
 
+func sort_tags_based_on_how_well_they_split_the_population_in_half(a : String, b : String, scores : Dictionary) -> bool:
+	if scores[a] < scores[b]:
+		return true
+	else:
+		return false
+
 func _on_link_input_text_changed(new_text : String):
 	new_text = new_text.to_lower()
 	for child in %"autofill suggestion list".get_children():
@@ -63,7 +69,23 @@ func _on_link_input_text_changed(new_text : String):
 	var all_tags : Array = %"entry editing".tags.keys()
 	
 	if new_text.is_empty():
-		all_tags.sort()
+		var tag_scores : Dictionary = {}
+		var visible_entries_count : int = 0
+		for tag in all_tags:
+			tag_scores[tag] = 0 as int
+		for entry in %items.get_children():
+			if entry is library_entry:
+				if not entry.visible:
+					continue
+				visible_entries_count += 1
+				for tag in all_tags:
+					if entry.tags.has(tag):
+						tag_scores[tag] += 1
+		var fifty_percent : float = visible_entries_count / 2.0
+		for tag in all_tags:
+			tag_scores[tag] = absf(tag_scores[tag] - fifty_percent)
+		
+		all_tags.sort_custom(sort_tags_based_on_how_well_they_split_the_population_in_half.bind(tag_scores))
 	else:
 		all_tags.sort_custom(tag_sort.bind(new_text))
 	
