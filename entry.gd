@@ -31,8 +31,8 @@ func set_title(new_title : String):
 func load_image_from_buffer(buffer : PackedByteArray) -> Image:
 	var img = Image.new()
 	var success : bool = false
-	for load_function in [img.load_jpg_from_buffer, img.load_png_from_buffer,
-							img.load_webp_from_buffer, img.load_tga_from_buffer,
+	for load_function in [img.load_webp_from_buffer, img.load_png_from_buffer,
+							img.load_jpg_from_buffer, img.load_tga_from_buffer,
 							img.load_bmp_from_buffer]:
 		assert(load_function is Callable)
 		var result : int = load_function.call(buffer)
