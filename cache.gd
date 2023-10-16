@@ -11,7 +11,7 @@ func create_cache_entry(source_link : String, data) -> void:
 	var meta_file := FileAccess.open(save_path + "_meta", FileAccess.WRITE)
 	if data is Image:
 		meta_file.store_line("image")
-		var err = data.save_webp(save_path, true)
+		var err = data.save_webp(save_path, true, 0.4)
 		printt(error_string(err), save_path)
 	else:
 		meta_file.store_line("generic")
