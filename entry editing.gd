@@ -7,10 +7,6 @@ func add_tags(new_tags : Dictionary):
 		var tag := StringName(new_tag)
 		tags[tag] = {"how_many_entries_have_this_tag" : new_tags[tag]}
 
-func _ready():
-	if FileAccess.file_exists("user://tags"):
-		tags = JSON.parse_string(FileAccess.get_file_as_string("user://tags"))
-
 var selected_entry : library_entry:
 	set(value):
 		if value == null:
@@ -50,9 +46,10 @@ func _on_tag_input_text_changed(new_text : String):
 func entry_erase_tag(tag : StringName):
 	selected_entry.tags.erase(tag)
 	selected_entry.save_to_file()
-	%"tag input".text = ""
 	tags[tag]["how_many_entries_have_this_tag"] -= 1
 	save_to_file()
+	%"tag input".text = ""
+	%"tag input".grab_focus()
 	_on_tag_input_text_changed("")
 
 func entry_add_tag(new_tag : StringName):
@@ -64,6 +61,8 @@ func entry_add_tag(new_tag : StringName):
 	else:
 		tags[new_tag]["how_many_entries_have_this_tag"] += 1
 	save_to_file()
+	%"tag input".text = ""
+	%"tag input".grab_focus()
 	_on_tag_input_text_changed("")
 
 func _on_tag_input_text_submitted(new_text : String):

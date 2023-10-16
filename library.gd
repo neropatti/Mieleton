@@ -23,7 +23,6 @@ func _ready():
 		var new_link_entry := link_entry.instantiate()
 		%items.add_child(new_link_entry)
 		new_link_entry.link = link
-		print(title)
 		new_link_entry.set_title(title)
 		new_link_entry.set_thumbnail(thumbnail_link)
 		new_link_entry.tags = tags
