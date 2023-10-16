@@ -24,12 +24,21 @@ func _unhandled_input(event):
 		self.visible = false
 		selected_entry = null
 
+func sort_tags_based_on_how_many_entries_have_them(a : String, b : String, tag_dict : Dictionary):
+	if tag_dict[a]["how_many_entries_have_this_tag"] > tag_dict[b]["how_many_entries_have_this_tag"]:
+		return true
+	else:
+		return false
+
 func _on_tag_input_text_changed(new_text : String):
 	var new_tag := StringName(new_text.to_lower())
 	for container in [%"global tag matches", %"entry tag matches"]:
 		for child in container.get_children():
 			child.queue_free()
-	for tag in tags:
+	var tags_sorted : Array = tags.keys()
+	var sort_callable : Callable = sort_tags_based_on_how_many_entries_have_them.bind(tags)
+	tags_sorted.sort_custom(sort_callable)
+	for tag in tags_sorted:
 		if tag.begins_with(new_tag):
 			if selected_entry.tags.has(tag):
 				continue
@@ -37,6 +46,7 @@ func _on_tag_input_text_changed(new_text : String):
 			new_button.text = tag
 			%"global tag matches".add_child(new_button)
 			new_button.pressed.connect(entry_add_tag.bind(tag))
+	selected_entry.tags.sort_custom(sort_callable)
 	for tag in selected_entry.tags:
 		if tag.begins_with(new_tag):
 			var new_button := Button.new()
