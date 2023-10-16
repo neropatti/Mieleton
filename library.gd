@@ -89,40 +89,53 @@ func _on_link_input_text_changed(new_text : String):
 	else:
 		all_tags.sort_custom(tag_sort.bind(new_text))
 	
-	var selected_tags : Array [String]
-	var unselected_tags : Array [String]
+	var positive_tags : Array [String]
+	var negative_tags : Array [String]
+	var neutral_tags : Array [String]
 	
 	for tag in all_tags:
 		if active_tag_filters.has(tag):
-			selected_tags.append(tag)
+			if active_tag_filters[tag] == true:
+				positive_tags.append(tag)
+			else:
+				negative_tags.append(tag)
 		else:
-			unselected_tags.append(tag)
+			neutral_tags.append(tag)
 	
-	for tag in selected_tags:
-		var new_button := CheckBox.new()
+	for tag in positive_tags:
+		var new_button := state_cycling_button.new()
 		%"autofill suggestion list".add_child(new_button)
 		new_button.text = tag
-		new_button.button_pressed = true
-		new_button.toggled.connect(add_tag_filter.bind(tag))
+		new_button.current_state = state_cycling_button.states.positive
+		new_button.state_cycled.connect(add_tag_filter.bind(tag))
 	
-	for tag in unselected_tags:
-		var new_button := CheckBox.new()
+	for tag in negative_tags:
+		var new_button := state_cycling_button.new()
 		%"autofill suggestion list".add_child(new_button)
 		new_button.text = tag
-		new_button.button_pressed = false
-		new_button.toggled.connect(add_tag_filter.bind(tag))
-		
+		new_button.current_state = state_cycling_button.states.negative
+		new_button.state_cycled.connect(add_tag_filter.bind(tag))
+	
+	for tag in neutral_tags:
+		var new_button := state_cycling_button.new()
+		%"autofill suggestion list".add_child(new_button)
+		new_button.text = tag
+		new_button.current_state = state_cycling_button.states.neutral
+		new_button.state_cycled.connect(add_tag_filter.bind(tag))
 
 var active_tag_filters : Dictionary
 
-func add_tag_filter(enabled : bool, tag : String):
-	if enabled:
-		active_tag_filters[tag] = true
-	else:
-		active_tag_filters.erase(tag)
+func add_tag_filter(state : state_cycling_button.states, tag : String):
+	match state:
+		state_cycling_button.states.positive:
+			active_tag_filters[tag] = true
+		state_cycling_button.states.negative:
+			active_tag_filters[tag] = false
+		state_cycling_button.states.neutral:
+			active_tag_filters.erase(tag)
 	for entry in %items.get_children():
 		entry.visible = true
 		for tagg in active_tag_filters:
-			if not entry.tags.has(tagg):
+			if active_tag_filters[tagg] != entry.tags.has(tagg):
 				entry.visible = false
 				break
