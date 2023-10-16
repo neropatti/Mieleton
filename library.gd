@@ -40,11 +40,6 @@ func _on_link_input_text_submitted(link : String):
 	new_link_entry.clicked.connect(open_tag_editor)
 	_on_link_input_text_changed("")
 
-func trim_prefixes(string : String, prefixes : Array [String]) -> String:
-	for prefix in prefixes:
-		string = string.trim_prefix(prefix)
-	return string
-
 const save_path : String = "user://entries/"
 
 func link_to_path(link : String) -> String:
@@ -54,26 +49,47 @@ func open_tag_editor(entry : Node):
 	%"entry editing".visible = true
 	%"entry editing".selected_entry = entry
 
+func tag_sort(a : String, b : String, search : String) -> bool:
+	if a.similarity(search) + int(a.begins_with(search)) > b.similarity(search) + int(b.begins_with(search)):
+		return true
+	else:
+		return false
+
 func _on_link_input_text_changed(new_text : String):
+	new_text = new_text.to_lower()
 	for child in %"autofill suggestion list".get_children():
 		child.queue_free()
 	
-	for tag in %"entry editing".tags:
-		if active_tag_filters.has(tag):
-			var new_button := CheckBox.new()
-			%"autofill suggestion list".add_child(new_button)
-			new_button.text = tag
-			new_button.button_pressed = true
-			new_button.toggled.connect(add_tag_filter.bind(tag))
+	var all_tags : Array = %"entry editing".tags.keys()
 	
-	for tag in %"entry editing".tags:
+	if new_text.is_empty():
+		all_tags.sort()
+	else:
+		all_tags.sort_custom(tag_sort.bind(new_text))
+	
+	var selected_tags : Array [String]
+	var unselected_tags : Array [String]
+	
+	for tag in all_tags:
 		if active_tag_filters.has(tag):
-			continue # This tag is already present earlier on the list
-		if tag.begins_with(new_text):
-			var new_button := CheckBox.new()
-			%"autofill suggestion list".add_child(new_button)
-			new_button.text = tag
-			new_button.toggled.connect(add_tag_filter.bind(tag))
+			selected_tags.append(tag)
+		else:
+			unselected_tags.append(tag)
+	
+	for tag in selected_tags:
+		var new_button := CheckBox.new()
+		%"autofill suggestion list".add_child(new_button)
+		new_button.text = tag
+		new_button.button_pressed = true
+		new_button.toggled.connect(add_tag_filter.bind(tag))
+	
+	for tag in unselected_tags:
+		var new_button := CheckBox.new()
+		%"autofill suggestion list".add_child(new_button)
+		new_button.text = tag
+		new_button.button_pressed = false
+		new_button.toggled.connect(add_tag_filter.bind(tag))
+		
 
 var active_tag_filters : Dictionary
 
