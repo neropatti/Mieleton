@@ -109,5 +109,9 @@ func _on_exit_editing_mode_pressed():
 
 func entry_clicked(event):
 	if event is InputEventMouseButton:
-		if event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
-			OS.shell_open(selected_entry.link)
+		if event.is_pressed():
+			match event.button_index:
+				MOUSE_BUTTON_LEFT:
+					OS.shell_open(selected_entry.link)
+				MOUSE_BUTTON_RIGHT:
+					DisplayServer.clipboard_set(selected_entry.link)
