@@ -22,6 +22,7 @@ func _ready():
 			all_tags[tag] += 1
 		var new_link_entry := link_entry.instantiate()
 		%items.add_child(new_link_entry)
+		%items.move_child(new_link_entry, 0)
 		new_link_entry.link = link
 		new_link_entry.set_title(title)
 		new_link_entry.set_thumbnail(thumbnail_link)
@@ -36,6 +37,7 @@ func _on_link_input_text_submitted(link : String):
 	var new_link_entry := link_entry.instantiate()
 	new_link_entry.filename = str(int(Time.get_unix_time_from_system())) + "_" + str(randi())
 	%items.add_child(new_link_entry)
+	%items.move_child(new_link_entry, 0)
 	new_link_entry.set_link(link)
 	new_link_entry.clicked.connect(open_tag_editor)
 	_on_link_input_text_changed("")
