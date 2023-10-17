@@ -18,3 +18,10 @@ signal state_cycled(new_state : int)
 func cycle_state():
 	current_state = (current_state + 1) % 3
 	state_cycled.emit(current_state)
+
+signal right_clicked
+
+func _gui_input(event):
+	if event is InputEventMouseButton:
+		if event.is_pressed() and event.button_index == MOUSE_BUTTON_RIGHT:
+			right_clicked.emit()

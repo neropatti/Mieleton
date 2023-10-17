@@ -71,33 +71,44 @@ func _on_link_input_text_changed(new_text : String):
 		child.queue_free()
 	
 	var all_tags : Array = %"entry editing".tags.keys()
+	var visible_entries := %items.get_children().filter(func only_visible_elements(entry : Node): return entry.visible)
+	
+	var visible_tags : Array = []
+	
+	for tag in all_tags:
+		if active_tag_filters.has(tag):
+			visible_tags.append(tag)
+		else:
+			for entry in visible_entries:
+				if entry.tags.has(tag):
+					print("We have the tag %s" % tag)
+					visible_tags.append(tag)
+					break
 	
 	if new_text.is_empty():
 		var tag_scores : Dictionary = {}
 		var visible_entries_count : int = 0
-		for tag in all_tags:
+		for tag in visible_tags:
 			tag_scores[tag] = 0 as int
-		for entry in %items.get_children():
+		for entry in visible_entries:
 			if entry is library_entry:
-				if not entry.visible:
-					continue
 				visible_entries_count += 1
-				for tag in all_tags:
+				for tag in visible_tags:
 					if entry.tags.has(tag):
 						tag_scores[tag] += 1
 		var fifty_percent : float = visible_entries_count / 2.0
-		for tag in all_tags:
+		for tag in visible_tags:
 			tag_scores[tag] = absf(tag_scores[tag] - fifty_percent)
 		
-		all_tags.sort_custom(sort_tags_based_on_how_well_they_split_the_population_in_half.bind(tag_scores))
+		visible_tags.sort_custom(sort_tags_based_on_how_well_they_split_the_population_in_half.bind(tag_scores))
 	else:
-		all_tags.sort_custom(tag_sort.bind(new_text))
+		visible_tags.sort_custom(tag_sort.bind(new_text))
 	
 	var positive_tags : Array [String]
 	var negative_tags : Array [String]
 	var neutral_tags : Array [String]
 	
-	for tag in all_tags:
+	for tag in visible_tags:
 		if active_tag_filters.has(tag):
 			if active_tag_filters[tag] == true:
 				positive_tags.append(tag)
@@ -112,6 +123,7 @@ func _on_link_input_text_changed(new_text : String):
 		new_button.text = tag
 		new_button.current_state = state_cycling_button.states.positive
 		new_button.state_cycled.connect(add_tag_filter.bind(tag))
+		new_button.right_clicked.connect(edit_tag.bind(tag))
 	
 	for tag in negative_tags:
 		var new_button := state_cycling_button.new()
@@ -119,6 +131,7 @@ func _on_link_input_text_changed(new_text : String):
 		new_button.text = tag
 		new_button.current_state = state_cycling_button.states.negative
 		new_button.state_cycled.connect(add_tag_filter.bind(tag))
+		new_button.right_clicked.connect(edit_tag.bind(tag))
 	
 	for tag in neutral_tags:
 		var new_button := state_cycling_button.new()
@@ -126,14 +139,16 @@ func _on_link_input_text_changed(new_text : String):
 		new_button.text = tag
 		new_button.current_state = state_cycling_button.states.neutral
 		new_button.state_cycled.connect(add_tag_filter.bind(tag))
-	var entries := %items.get_children()
+		new_button.right_clicked.connect(edit_tag.bind(tag))
+	
+	print("Visible entries: %s" % visible_entries.size())
 	
 	if new_text.is_empty():
-		entries.sort_custom(sort_entries_based_on_filename)
+		visible_entries.sort_custom(sort_entries_based_on_filename)
 	else:
-		entries.sort_custom(sort_entries_based_on_string_match.bind(new_text))
+		visible_entries.sort_custom(sort_entries_based_on_string_match.bind(new_text))
 	
-	for entry in entries:
+	for entry in visible_entries:
 		%items.move_child(entry, 0)
 
 func sort_entries_based_on_filename(a : library_entry, b : library_entry):
@@ -168,3 +183,8 @@ func add_tag_filter(state : state_cycling_button.states, tag : String):
 				# If this tag should be excluded and the entry has it, hide the entry.
 				entry.visible = false
 				break
+	if not Input.is_action_pressed("don't clear text field"):
+		_on_link_input_text_changed(%"link input".text)
+
+func edit_tag(tag : String):
+	print("Edit tag: %s" % tag)
