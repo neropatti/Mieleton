@@ -74,7 +74,7 @@ func entry_add_tag(new_tag : StringName):
 	save_to_file()
 	if not Input.is_action_pressed("don't clear text field"):
 		%"tag input".text = ""
-		_on_tag_input_text_changed("")
+	_on_tag_input_text_changed(%"tag input".text)
 	%"tag input".grab_focus()
 
 func _on_tag_input_text_submitted(new_text : String):
