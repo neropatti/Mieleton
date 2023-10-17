@@ -124,6 +124,29 @@ func _on_link_input_text_changed(new_text : String):
 		new_button.text = tag
 		new_button.current_state = state_cycling_button.states.neutral
 		new_button.state_cycled.connect(add_tag_filter.bind(tag))
+	var entries := %items.get_children()
+	
+	if new_text.is_empty():
+		entries.sort_custom(sort_entries_based_on_filename)
+	else:
+		entries.sort_custom(sort_entries_based_on_string_match.bind(new_text))
+	
+	for entry in entries:
+		%items.move_child(entry, 0)
+
+func sort_entries_based_on_filename(a : library_entry, b : library_entry):
+	if a.filename.naturalnocasecmp_to(b.filename) == -1:
+		return true
+	else:
+		return false
+
+func sort_entries_based_on_string_match(a : library_entry, b : library_entry, string : String):
+	var a_title_lowercase := a.title.to_lower()
+	var b_title_lowercase := b.title.to_lower()
+	if a.title.to_lower().similarity(string) + int(a_title_lowercase.begins_with(string)) < b.title.to_lower().similarity(string) + int(b_title_lowercase.begins_with(string)):
+		return true
+	else:
+		return false
 
 var active_tag_filters : Dictionary
 
