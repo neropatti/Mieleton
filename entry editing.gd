@@ -31,26 +31,46 @@ func sort_tags_based_on_how_many_entries_have_them(a : String, b : String, tag_d
 		return false
 
 func _on_tag_input_text_changed(new_text : String):
-	var new_tag := StringName(new_text.to_lower())
+	var new_tag := new_text.to_lower()
 	for container in [%"global tag matches", %"entry tag matches"]:
 		for child in container.get_children():
 			child.queue_free()
+	
+	var tag_scores : Dictionary = {}
+	for tag in tags:
+		tag_scores[tag] = 0 as int
+	for entry in %items.get_children():
+		if entry is library_entry:
+			var valid_entry : bool = true
+			for tag in selected_entry.tags:
+				if not entry.tags.has(tag):
+					valid_entry = false
+					break
+			if valid_entry:
+				for tag in entry.tags:
+					tag_scores[tag] += 1
+	
 	var tags_sorted : Array = tags.keys()
-	var sort_callable : Callable = sort_tags_based_on_how_many_entries_have_them.bind(tags)
+	var sort_callable : Callable = func(a : String, b : String):
+		if tag_scores[a] == tag_scores[b]:
+			return sort_tags_based_on_how_many_entries_have_them(a, b, tags)
+		else:
+			return tag_scores[a] > tag_scores[b]
+#	var sort_callable : Callable = sort_tags_based_on_how_many_entries_have_them.bind(tags)
 	tags_sorted.sort_custom(sort_callable)
 	for tag in tags_sorted:
 		if tag.begins_with(new_tag):
 			if selected_entry.tags.has(tag):
 				continue
 			var new_button := Button.new()
-			new_button.text = tag
+			new_button.text = tag + " (" + str(tags[tag]["how_many_entries_have_this_tag"]) + ")"
 			%"global tag matches".add_child(new_button)
 			new_button.pressed.connect(entry_add_tag.bind(tag))
 	selected_entry.tags.sort_custom(sort_callable)
 	for tag in selected_entry.tags:
 		if tag.begins_with(new_tag):
 			var new_button := Button.new()
-			new_button.text = tag
+			new_button.text = tag + " (" + str(tags[tag]["how_many_entries_have_this_tag"]) + ")"
 			%"entry tag matches".add_child(new_button)
 			new_button.pressed.connect(entry_erase_tag.bind(tag))
 

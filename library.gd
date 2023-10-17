@@ -114,9 +114,9 @@ func _on_link_input_text_changed(new_text : String):
 	else:
 		visible_tags.sort_custom(tag_sort.bind(new_text.to_lower()))
 	
-	var positive_tags : Array [String]
-	var negative_tags : Array [String]
-	var neutral_tags : Array [String]
+	var positive_tags : Array [String] = []
+	var negative_tags : Array [String] = []
+	var neutral_tags : Array [String] = []
 	
 	for tag in visible_tags:
 		if active_tag_filters.has(tag):
