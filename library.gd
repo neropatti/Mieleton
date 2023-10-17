@@ -66,6 +66,7 @@ func sort_tags_based_on_how_well_they_split_the_population_in_half(a : String, b
 		return false
 
 func _on_link_input_text_changed(new_text : String):
+	%"refresh tags".disabled = true
 	new_text = new_text.to_lower()
 	for child in %"autofill suggestion list".get_children():
 		child.queue_free()
@@ -81,7 +82,6 @@ func _on_link_input_text_changed(new_text : String):
 		else:
 			for entry in visible_entries:
 				if entry.tags.has(tag):
-					print("We have the tag %s" % tag)
 					visible_tags.append(tag)
 					break
 	
@@ -168,6 +168,7 @@ func sort_entries_based_on_string_match(a : library_entry, b : library_entry, st
 var active_tag_filters : Dictionary
 
 func add_tag_filter(state : state_cycling_button.states, tag : String):
+	%"refresh tags".disabled = false
 	match state:
 		state_cycling_button.states.positive:
 			active_tag_filters[tag] = true
@@ -183,8 +184,9 @@ func add_tag_filter(state : state_cycling_button.states, tag : String):
 				# If this tag should be excluded and the entry has it, hide the entry.
 				entry.visible = false
 				break
-	if not Input.is_action_pressed("don't clear text field"):
-		_on_link_input_text_changed(%"link input".text)
 
 func edit_tag(tag : String):
 	print("Edit tag: %s" % tag)
+
+func _on_refresh_tags_pressed():
+	_on_link_input_text_changed(%"link input".text)
