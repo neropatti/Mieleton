@@ -72,9 +72,10 @@ func entry_add_tag(new_tag : StringName):
 	else:
 		tags[new_tag]["how_many_entries_have_this_tag"] += 1
 	save_to_file()
-	%"tag input".text = ""
+	if not Input.is_action_pressed("don't clear text field"):
+		%"tag input".text = ""
+		_on_tag_input_text_changed("")
 	%"tag input".grab_focus()
-	_on_tag_input_text_changed("")
 
 func _on_tag_input_text_submitted(new_text : String):
 	%"tag input".text = ""
