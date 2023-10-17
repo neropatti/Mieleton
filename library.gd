@@ -33,6 +33,8 @@ func _ready():
 	_on_link_input_text_changed("")
 
 func _on_link_input_text_submitted(link : String):
+	if link.is_empty():
+		return
 	%"link input".text = ""
 	var new_link_entry := link_entry.instantiate()
 	new_link_entry.filename = str(int(Time.get_unix_time_from_system())) + "_" + str(randi())
