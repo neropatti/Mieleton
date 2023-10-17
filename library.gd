@@ -183,7 +183,8 @@ func add_tag_filter(state : state_cycling_button.states, tag : String):
 				# If this tag should be excluded and the entry has it, hide the entry.
 				entry.visible = false
 				break
-#	_on_link_input_text_changed(%"link input".text)
+	if not Input.is_action_pressed("don't clear text field"):
+		_on_link_input_text_changed(%"link input".text)
 
 func edit_tag(tag : String):
 	print("Edit tag: %s" % tag)
