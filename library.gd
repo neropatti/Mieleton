@@ -162,7 +162,9 @@ func sort_entries_based_on_string_match(a : library_entry, b : library_entry, st
 	var b_title := b.title.to_lower()
 	var a_score : int = a_title.similarity(string_lower) + int(a_title.begins_with(string_lower)) + int(a.link.begins_with(string))
 	var b_score : int = b_title.similarity(string_lower) + int(b_title.begins_with(string_lower)) + int(b.link.begins_with(string))
-	if a_score < b_score:
+	if a_score == b_score:
+		return sort_entries_based_on_filename(a, b)
+	elif a_score < b_score:
 		return true
 	else:
 		return false
