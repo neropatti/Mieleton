@@ -65,7 +65,17 @@ func sort_tags_based_on_how_well_they_split_the_population_in_half(a : String, b
 	else:
 		return false
 
+var we_waiting : bool = false
+var do_refresh_after_wait : bool = false
+
 func _on_link_input_text_changed(new_text : String):
+	if we_waiting:
+		do_refresh_after_wait = true
+		return
+	
+	we_waiting = true
+	%"sort refresh wait timer".start()
+	
 	%"refresh tags".disabled = true
 	
 	for child in %"autofill suggestion list".get_children():
@@ -194,3 +204,9 @@ func edit_tag(tag : String):
 
 func _on_refresh_tags_pressed():
 	_on_link_input_text_changed(%"link input".text)
+
+func _on_sort_refresh_wait_timer_timeout():
+	we_waiting = false
+	if do_refresh_after_wait:
+		_on_link_input_text_changed(%"link input".text)
+	do_refresh_after_wait = false

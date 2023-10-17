@@ -146,6 +146,11 @@ size_flags_horizontal = 3
 unique_name_in_owner = true
 layout_mode = 2
 
+[node name="sort refresh wait timer" type="Timer" parent="."]
+unique_name_in_owner = true
+wait_time = 0.35
+one_shot = true
+
 [connection signal="text_changed" from="VBoxContainer/link input" to="." method="_on_link_input_text_changed"]
 [connection signal="text_submitted" from="VBoxContainer/link input" to="." method="_on_link_input_text_submitted"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/refresh tags" to="." method="_on_refresh_tags_pressed"]
@@ -157,3 +162,4 @@ layout_mode = 2
 [connection signal="gui_input" from="entry editing/CenterContainer/VBoxContainer/link" to="entry editing" method="entry_clicked"]
 [connection signal="text_changed" from="entry editing/CenterContainer/VBoxContainer/tag input" to="entry editing" method="_on_tag_input_text_changed"]
 [connection signal="text_submitted" from="entry editing/CenterContainer/VBoxContainer/tag input" to="entry editing" method="_on_tag_input_text_submitted"]
+[connection signal="timeout" from="sort refresh wait timer" to="." method="_on_sort_refresh_wait_timer_timeout"]
