@@ -17,6 +17,15 @@ var selected_entry : library_entry:
 		%"name edit".text = value.title
 		_on_tag_input_text_changed("")
 
+func _ready():
+	self.visibility_changed.connect(on_visibility_changed)
+
+func on_visibility_changed():
+	if self.visible:
+		%"tag input".grab_focus()
+	else:
+		%"link input".grab_focus()
+
 func _unhandled_input(event):
 	if not self.visible:
 		return
