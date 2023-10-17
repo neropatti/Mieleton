@@ -67,7 +67,7 @@ func sort_tags_based_on_how_well_they_split_the_population_in_half(a : String, b
 
 func _on_link_input_text_changed(new_text : String):
 	%"refresh tags".disabled = true
-	new_text = new_text.to_lower()
+	
 	for child in %"autofill suggestion list".get_children():
 		child.queue_free()
 	
@@ -102,7 +102,7 @@ func _on_link_input_text_changed(new_text : String):
 		
 		visible_tags.sort_custom(sort_tags_based_on_how_well_they_split_the_population_in_half.bind(tag_scores))
 	else:
-		visible_tags.sort_custom(tag_sort.bind(new_text))
+		visible_tags.sort_custom(tag_sort.bind(new_text.to_lower()))
 	
 	var positive_tags : Array [String]
 	var negative_tags : Array [String]
@@ -146,7 +146,7 @@ func _on_link_input_text_changed(new_text : String):
 	if new_text.is_empty():
 		visible_entries.sort_custom(sort_entries_based_on_filename)
 	else:
-		visible_entries.sort_custom(sort_entries_based_on_string_match.bind(new_text))
+		visible_entries.sort_custom(sort_entries_based_on_string_match.bind(new_text, new_text.to_lower()))
 	
 	for entry in visible_entries:
 		%items.move_child(entry, 0)
@@ -157,10 +157,12 @@ func sort_entries_based_on_filename(a : library_entry, b : library_entry):
 	else:
 		return false
 
-func sort_entries_based_on_string_match(a : library_entry, b : library_entry, string : String):
-	var a_title_lowercase := a.title.to_lower()
-	var b_title_lowercase := b.title.to_lower()
-	if a.title.to_lower().similarity(string) + int(a_title_lowercase.begins_with(string)) < b.title.to_lower().similarity(string) + int(b_title_lowercase.begins_with(string)):
+func sort_entries_based_on_string_match(a : library_entry, b : library_entry, string : String, string_lower : String):
+	var a_title := a.title.to_lower()
+	var b_title := b.title.to_lower()
+	var a_score : int = a_title.similarity(string_lower) + int(a_title.begins_with(string_lower)) + int(a.link.begins_with(string))
+	var b_score : int = b_title.similarity(string_lower) + int(b_title.begins_with(string_lower)) + int(b.link.begins_with(string))
+	if a_score < b_score:
 		return true
 	else:
 		return false
