@@ -7,6 +7,8 @@ var link : String
 var title : String
 var thumbnail_link : String
 
+var alternative_links : Array [String]
+
 var thumbnail_texture : Texture2D
 
 var filename : String
@@ -184,6 +186,7 @@ func save_to_file():
 		"title" : title,
 		"thumbnail_link" : thumbnail_link,
 		"tags" : tags,
+		"alternative_links" : alternative_links,
 	}))
 	print("SAVED")
 

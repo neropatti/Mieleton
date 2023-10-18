@@ -15,7 +15,28 @@ var selected_entry : library_entry:
 		%thumbnail.texture = value.thumbnail_texture
 		%link.text = value.link
 		%"name edit".text = value.title
+		for child in %"alt links".get_children():
+			child.queue_free()
+		for link in value.alternative_links:
+			add_alt_link_label(link)
 		_on_tag_input_text_changed("")
+
+func add_alt_link_label(link : String):
+	var alt_link : alt_link_container = preload("res://alt_link_container.tscn").instantiate()
+	alt_link.text = link
+	%"alt links".add_child(alt_link)
+	alt_link.delete_pressed.connect(delete_alt_link.bind(alt_link))
+	alt_link.link_changed.connect(alt_link_edited)
+
+func alt_link_edited(alt_link : alt_link_container):
+	var index : int = alt_link.get_index()
+	selected_entry.alternative_links[index] = alt_link.text
+	selected_entry.save_to_file()
+
+func delete_alt_link(alt_link : alt_link_container):
+	selected_entry.alternative_links.erase(alt_link.text)
+	alt_link.queue_free()
+	selected_entry.save_to_file()
 
 func _ready():
 	self.visibility_changed.connect(on_visibility_changed)
@@ -145,3 +166,9 @@ func entry_clicked(event):
 					OS.shell_open(selected_entry.link)
 				MOUSE_BUTTON_RIGHT:
 					DisplayServer.clipboard_set(selected_entry.link)
+
+func _on_alt_link_input_text_submitted(new_text : String):
+	selected_entry.alternative_links.append(new_text)
+	selected_entry.save_to_file()
+	add_alt_link_label(new_text)
+	%"alt link input".text = ""

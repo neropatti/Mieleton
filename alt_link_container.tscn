@@ -1,0 +1,38 @@
+[gd_scene load_steps=2 format=3 uid="uid://ciagjjkvtrgd6"]
+
+[ext_resource type="Script" path="res://alt_link_container.gd" id="1_rrv57"]
+
+[node name="alt link container" type="HBoxContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+size_flags_horizontal = 3
+alignment = 1
+script = ExtResource("1_rrv57")
+
+[node name="text edit" type="LineEdit" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+expand_to_text_length = true
+
+[node name="Label" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 2
+text = "placeholder sample text"
+
+[node name="edit" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+text = "edit"
+
+[node name="delete" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+text = "delete"
+
+[connection signal="focus_exited" from="text edit" to="." method="_on_text_edit_focus_exited"]
+[connection signal="text_submitted" from="text edit" to="." method="_on_text_edit_text_submitted"]
+[connection signal="gui_input" from="Label" to="." method="_on_label_gui_input"]
+[connection signal="pressed" from="edit" to="." method="_on_edit_pressed"]

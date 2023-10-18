@@ -28,6 +28,10 @@ func _ready():
 		new_link_entry.set_thumbnail(thumbnail_link)
 		new_link_entry.tags = tags
 		new_link_entry.filename = file_name
+		if entry_data.has("alternative_links"):
+			for alt_link in entry_data["alternative_links"]:
+				assert(alt_link is String)
+				new_link_entry.alternative_links.append(alt_link)
 		new_link_entry.clicked.connect(open_tag_editor)
 	%"entry editing".add_tags(all_tags)
 	_on_link_input_text_changed("")
