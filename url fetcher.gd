@@ -3,6 +3,9 @@ extends Node
 var active_web_requests : Dictionary = {}
 
 func fetch_url(url : String) -> Array:
+	if not (url.begins_with("http://") or url.begins_with("https://")):
+		print("Didn't consider \"%s\" a valid URL" % url)
+		return [ERR_QUERY_FAILED]
 	if active_web_requests.has(url):
 		print("Waiting on already existing request for \"%s\"" % url)
 		var web_request : HTTPRequest = active_web_requests[url]

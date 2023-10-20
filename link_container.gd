@@ -1,5 +1,5 @@
 extends HBoxContainer
-class_name alt_link_container
+class_name link_container
 
 var text : String:
 	set(value):
@@ -10,7 +10,7 @@ var text : String:
 @onready var delete_pressed : Signal = %delete.pressed
 
 signal link_clicked(link : String)
-signal link_changed(me : alt_link_container)
+signal link_changed(me : link_container)
 
 func _on_label_gui_input(event):
 	if event is InputEventMouseButton:

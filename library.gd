@@ -8,7 +8,18 @@ func _ready():
 		assert(FileAccess.file_exists("user://entries/" + file_name))
 		var entry := FileAccess.get_file_as_string("user://entries/" + file_name)
 		var entry_data : Dictionary = JSON.parse_string(entry)
-		var link : String = entry_data["link"]
+		var data_version : int = 0 if not entry_data.has("version") else entry_data["version"]
+		var locations : Array [String]
+		if data_version == 0:
+			# Legacy data format handling
+			locations.append(entry_data["link"])
+			if entry_data.has("alternative_links"):
+				for link in entry_data["alternative_links"]:
+					assert(link is String)
+					locations.append(link)
+		else:
+			for location in entry_data["locations"]:
+				locations.append(location)
 		var title : String = entry_data["title"]
 		var thumbnail_link : String = entry_data["thumbnail_link"]
 		var _tags : Array = entry_data["tags"]
@@ -23,15 +34,11 @@ func _ready():
 		var new_link_entry := link_entry.instantiate()
 		%items.add_child(new_link_entry)
 		%items.move_child(new_link_entry, 0)
-		new_link_entry.link = link
+		new_link_entry.locations = locations
 		new_link_entry.set_title(title)
 		new_link_entry.set_thumbnail(thumbnail_link)
 		new_link_entry.tags = tags
 		new_link_entry.filename = file_name
-		if entry_data.has("alternative_links"):
-			for alt_link in entry_data["alternative_links"]:
-				assert(alt_link is String)
-				new_link_entry.alternative_links.append(alt_link)
 		new_link_entry.clicked.connect(open_tag_editor)
 	%"entry editing".add_tags(all_tags)
 	_on_link_input_text_changed("")
@@ -40,11 +47,12 @@ func _on_link_input_text_submitted(link : String):
 	if link.is_empty():
 		return
 	%"link input".text = ""
-	var new_link_entry := link_entry.instantiate()
+	var new_link_entry : library_entry = link_entry.instantiate()
 	new_link_entry.filename = str(int(Time.get_unix_time_from_system())) + "_" + str(randi())
 	%items.add_child(new_link_entry)
 	%items.move_child(new_link_entry, 0)
-	new_link_entry.set_link(link)
+	new_link_entry.locations.insert(0, link)
+	new_link_entry.refresh_primary_link()
 	new_link_entry.clicked.connect(open_tag_editor)
 	_on_link_input_text_changed("")
 
@@ -160,6 +168,7 @@ func _on_link_input_text_changed(new_text : String):
 	if new_text.is_empty():
 		visible_entries.sort_custom(sort_entries_based_on_filename)
 	else:
+		# TODO: Calculate the scored multi-threaded? Hmm maybe
 		visible_entries.sort_custom(sort_entries_based_on_string_match.bind(new_text, new_text.to_lower()))
 	
 	for entry in visible_entries:
@@ -174,8 +183,16 @@ func sort_entries_based_on_filename(a : library_entry, b : library_entry):
 func sort_entries_based_on_string_match(a : library_entry, b : library_entry, string : String, string_lower : String):
 	var a_title := a.title.to_lower()
 	var b_title := b.title.to_lower()
-	var a_score : int = a_title.similarity(string_lower) + int(a_title.begins_with(string_lower)) + int(a.link.begins_with(string))
-	var b_score : int = b_title.similarity(string_lower) + int(b_title.begins_with(string_lower)) + int(b.link.begins_with(string))
+	var a_score : int = a_title.similarity(string_lower) + int(a_title.begins_with(string_lower))
+	for location in a.locations:
+		if location.begins_with(string):
+			a_score += 1
+			break
+	var b_score : int = b_title.similarity(string_lower) + int(b_title.begins_with(string_lower))
+	for location in b.locations:
+		if location.begins_with(string):
+			b_score += 1
+			break
 	if a_score == b_score:
 		return sort_entries_based_on_filename(a, b)
 	elif a_score < b_score:

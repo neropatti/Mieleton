@@ -3,11 +3,9 @@ class_name library_entry
 
 var tags : Array [StringName]
 
-var link : String
+var locations : Array [String]
 var title : String
 var thumbnail_link : String
-
-var alternative_links : Array [String]
 
 var thumbnail_texture : Texture2D
 
@@ -15,8 +13,8 @@ var filename : String
 
 signal data_updated
 
-func set_link(new_link : String):
-	link = new_link
+func refresh_primary_link():
+	var new_link : String = locations[0]
 	set_title(new_link)
 	var request_result : Array = await UrlFetcher.fetch_url(new_link)
 	if request_result[0] != OK or request_result[1] != 200:
@@ -149,6 +147,7 @@ func _on_webpage_fetcher_request_completed(result : int, response_code : int, he
 			if header.contains("text/html"):
 				parse_webpage(body)
 			elif header.contains("image"):
+				var link := locations[0]
 				thumbnail_link = link
 				parse_image(body)
 				var a : int = link.get_slice_count("/")
@@ -161,6 +160,8 @@ func _on_thumbnail_fetcher_request_completed(result : int, response_code : int, 
 		if header.begins_with("Content-Type:"):
 			if header.contains("text/html"):
 				printerr("HTML page passed onto the thumbnail handler!")
+				thumbnail_link = ""
+				save_to_file()
 			elif header.contains("image"):
 				parse_image(body)
 			else:
@@ -182,13 +183,13 @@ func save_to_file():
 	
 	var file := FileAccess.open(save_path + filename, FileAccess.WRITE)
 	file.store_string(JSON.stringify({
-		"link" : link,
+		"locations" : locations,
 		"title" : title,
 		"thumbnail_link" : thumbnail_link,
 		"tags" : tags,
-		"alternative_links" : alternative_links,
+		"version" : 1,
 	}))
-	print("SAVED")
+	print("Saved \"%s\"" % title)
 
 func delete_from_disk_and_queue_free():
 	assert(not filename.is_empty())
