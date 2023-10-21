@@ -113,14 +113,13 @@ func entry_erase_tag(tag : StringName):
 	_on_tag_input_text_changed("")
 
 func entry_add_tag(new_tag : StringName):
+	if not tags.has(new_tag):
+		tags[new_tag] = {"how_many_entries_have_this_tag" : 0}
 	if not selected_entry.tags.has(new_tag):
 		selected_entry.tags.append(new_tag)
 		selected_entry.save_to_file()
-	if not tags.has(new_tag):
-		tags[new_tag] = {"how_many_entries_have_this_tag" : 1}
-	else:
 		tags[new_tag]["how_many_entries_have_this_tag"] += 1
-	save_to_file()
+		save_to_file()
 	if not Input.is_action_pressed("don't clear text field"):
 		%"tag input".text = ""
 	_on_tag_input_text_changed(%"tag input".text)
