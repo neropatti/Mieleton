@@ -16,10 +16,20 @@ signal data_updated
 func refresh_primary_link():
 	var new_link : String = locations[0]
 	set_title(new_link)
-	var request_result : Array = await UrlFetcher.fetch_url(new_link)
-	if request_result[0] != OK or request_result[1] != 200:
-		return
-	_on_webpage_fetcher_request_completed(request_result[0], request_result[1], request_result[2], request_result[3])
+	if tidbits.is_valid_url(new_link):
+		var request_result : Array = await UrlFetcher.fetch_url(new_link)
+		if request_result[0] != OK or request_result[1] != 200:
+			return
+		_on_webpage_fetcher_request_completed(request_result[0], request_result[1], request_result[2], request_result[3])
+	elif FileAccess.file_exists(new_link):
+		var extension := new_link.get_extension()
+		match extension:
+			"png", "webp", "jpg", "jpeg":
+				var img = Image.load_from_file(new_link)
+				Cache.create_cache_entry(new_link, img)
+				thumbnail_link = new_link
+				save_to_file()
+				%"thumbnail".texture = ImageTexture.create_from_image(img)
 
 func set_title(new_title : String):
 	title = new_title

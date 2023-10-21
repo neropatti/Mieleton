@@ -3,7 +3,7 @@ extends Node
 var active_web_requests : Dictionary = {}
 
 func fetch_url(url : String) -> Array:
-	if not (url.begins_with("http://") or url.begins_with("https://")):
+	if not tidbits.is_valid_url(url):
 		print("Didn't consider \"%s\" a valid URL" % url)
 		return [ERR_QUERY_FAILED]
 	if active_web_requests.has(url):

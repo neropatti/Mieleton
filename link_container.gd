@@ -16,9 +16,9 @@ func _on_label_gui_input(event):
 	if event is InputEventMouseButton:
 		if event.is_pressed():
 			if event.button_index == MOUSE_BUTTON_LEFT:
-				OS.shell_open(text)
+				tidbits.link_left_click(text)
 			elif event.button_index == MOUSE_BUTTON_RIGHT:
-				DisplayServer.clipboard_set(text)
+				tidbits.link_right_click(text)
 
 func _on_text_edit_text_submitted(new_text : String):
 	%Label.visible = true

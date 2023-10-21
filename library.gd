@@ -3,6 +3,7 @@ extends Control
 var link_entry := preload("res://entry.tscn")
 
 func _ready():
+	DisplayServer.window_set_drop_files_callback(_os_dropped_files)
 	var all_tags : Dictionary = {}
 	for file_name in DirAccess.get_files_at("user://entries/"):
 		assert(FileAccess.file_exists("user://entries/" + file_name))
@@ -231,3 +232,13 @@ func _on_sort_refresh_wait_timer_timeout():
 	if do_refresh_after_wait:
 		_on_link_input_text_changed(%"link input".text)
 	do_refresh_after_wait = false
+
+func _os_dropped_files(files : PackedStringArray):
+	# TODO: Display warning when dropping an absurd amount of files
+	# And require user confirmation :)
+	if %"entry editing".visible:
+		for file_path in files:
+			%"entry editing"._on_entry_link_input_text_submitted(file_path)
+	else:
+		for file_path in files:
+			_on_link_input_text_submitted(file_path)
