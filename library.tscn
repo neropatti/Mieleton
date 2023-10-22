@@ -73,7 +73,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.909804)
 
-[node name="CenterContainer" type="CenterContainer" parent="entry editing"]
+[node name="VBoxContainer" type="VBoxContainer" parent="entry editing"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -81,70 +81,81 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="entry editing/CenterContainer"]
-custom_minimum_size = Vector2(500, 500)
+[node name="HBoxContainer2" type="HBoxContainer" parent="entry editing/VBoxContainer"]
 layout_mode = 2
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="entry editing/CenterContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="exit editing mode" type="Button" parent="entry editing/CenterContainer/VBoxContainer/HBoxContainer2"]
+[node name="exit editing mode" type="Button" parent="entry editing/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Exit editing mode"
 
-[node name="delete entry" type="Button" parent="entry editing/CenterContainer/VBoxContainer/HBoxContainer2"]
+[node name="delete entry" type="Button" parent="entry editing/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 8
 text = "Delete entry"
 
-[node name="name edit" type="LineEdit" parent="entry editing/CenterContainer/VBoxContainer"]
+[node name="name edit" type="LineEdit" parent="entry editing/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 placeholder_text = "entry name"
 alignment = 1
 
-[node name="thumbnail" type="TextureRect" parent="entry editing/CenterContainer/VBoxContainer"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(100, 100)
+[node name="HBoxContainer3" type="HBoxContainer" parent="entry editing/VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 3
+
+[node name="tag stuff" type="VBoxContainer" parent="entry editing/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="tag input" type="LineEdit" parent="entry editing/VBoxContainer/HBoxContainer3/tag stuff"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_neighbor_right = NodePath("../../link stuff/entry link input")
+placeholder_text = "search for tags..."
+
+[node name="HBoxContainer" type="HBoxContainer" parent="entry editing/VBoxContainer/HBoxContainer3/tag stuff"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="entry editing/VBoxContainer/HBoxContainer3/tag stuff/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="global tag matches" type="VBoxContainer" parent="entry editing/VBoxContainer/HBoxContainer3/tag stuff/HBoxContainer/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="ScrollContainer2" type="ScrollContainer" parent="entry editing/VBoxContainer/HBoxContainer3/tag stuff/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="entry tag matches" type="VBoxContainer" parent="entry editing/VBoxContainer/HBoxContainer3/tag stuff/HBoxContainer/ScrollContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="thumbnail" type="TextureRect" parent="entry editing/VBoxContainer/HBoxContainer3"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
 expand_mode = 1
 stretch_mode = 5
 
-[node name="links" type="VBoxContainer" parent="entry editing/CenterContainer/VBoxContainer"]
-unique_name_in_owner = true
+[node name="link stuff" type="VBoxContainer" parent="entry editing/VBoxContainer/HBoxContainer3"]
 layout_mode = 2
+size_flags_horizontal = 3
 
-[node name="entry link input" type="LineEdit" parent="entry editing/CenterContainer/VBoxContainer"]
+[node name="entry link input" type="LineEdit" parent="entry editing/VBoxContainer/HBoxContainer3/link stuff"]
 unique_name_in_owner = true
 layout_mode = 2
+focus_neighbor_left = NodePath("../../tag stuff/tag input")
 placeholder_text = "insert new link..."
 
-[node name="tag input" type="LineEdit" parent="entry editing/CenterContainer/VBoxContainer"]
+[node name="links" type="VBoxContainer" parent="entry editing/VBoxContainer/HBoxContainer3/link stuff"]
 unique_name_in_owner = true
-layout_mode = 2
-placeholder_text = "search for tags..."
-
-[node name="HBoxContainer" type="HBoxContainer" parent="entry editing/CenterContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-
-[node name="ScrollContainer" type="ScrollContainer" parent="entry editing/CenterContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="global tag matches" type="VBoxContainer" parent="entry editing/CenterContainer/VBoxContainer/HBoxContainer/ScrollContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="ScrollContainer2" type="ScrollContainer" parent="entry editing/CenterContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="entry tag matches" type="VBoxContainer" parent="entry editing/CenterContainer/VBoxContainer/HBoxContainer/ScrollContainer2"]
-unique_name_in_owner = true
-layout_mode = 2
 
 [node name="sort refresh wait timer" type="Timer" parent="."]
 unique_name_in_owner = true
@@ -154,11 +165,11 @@ one_shot = true
 [connection signal="text_changed" from="VBoxContainer/link input" to="." method="_on_link_input_text_changed"]
 [connection signal="text_submitted" from="VBoxContainer/link input" to="." method="_on_link_input_text_submitted"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/refresh tags" to="." method="_on_refresh_tags_pressed"]
-[connection signal="pressed" from="entry editing/CenterContainer/VBoxContainer/HBoxContainer2/exit editing mode" to="entry editing" method="_on_exit_editing_mode_pressed"]
-[connection signal="pressed" from="entry editing/CenterContainer/VBoxContainer/HBoxContainer2/delete entry" to="entry editing" method="_on_delete_entry_pressed"]
-[connection signal="focus_exited" from="entry editing/CenterContainer/VBoxContainer/name edit" to="entry editing" method="_on_name_edit_focus_exited"]
-[connection signal="text_submitted" from="entry editing/CenterContainer/VBoxContainer/name edit" to="entry editing" method="_on_name_edit_text_submitted"]
-[connection signal="text_submitted" from="entry editing/CenterContainer/VBoxContainer/entry link input" to="entry editing" method="_on_entry_link_input_text_submitted"]
-[connection signal="text_changed" from="entry editing/CenterContainer/VBoxContainer/tag input" to="entry editing" method="_on_tag_input_text_changed"]
-[connection signal="text_submitted" from="entry editing/CenterContainer/VBoxContainer/tag input" to="entry editing" method="_on_tag_input_text_submitted"]
+[connection signal="pressed" from="entry editing/VBoxContainer/HBoxContainer2/exit editing mode" to="entry editing" method="_on_exit_editing_mode_pressed"]
+[connection signal="pressed" from="entry editing/VBoxContainer/HBoxContainer2/delete entry" to="entry editing" method="_on_delete_entry_pressed"]
+[connection signal="focus_exited" from="entry editing/VBoxContainer/name edit" to="entry editing" method="_on_name_edit_focus_exited"]
+[connection signal="text_submitted" from="entry editing/VBoxContainer/name edit" to="entry editing" method="_on_name_edit_text_submitted"]
+[connection signal="text_changed" from="entry editing/VBoxContainer/HBoxContainer3/tag stuff/tag input" to="entry editing" method="_on_tag_input_text_changed"]
+[connection signal="text_submitted" from="entry editing/VBoxContainer/HBoxContainer3/tag stuff/tag input" to="entry editing" method="_on_tag_input_text_submitted"]
+[connection signal="text_submitted" from="entry editing/VBoxContainer/HBoxContainer3/link stuff/entry link input" to="entry editing" method="_on_entry_link_input_text_submitted"]
 [connection signal="timeout" from="sort refresh wait timer" to="." method="_on_sort_refresh_wait_timer_timeout"]
