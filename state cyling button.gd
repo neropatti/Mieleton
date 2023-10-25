@@ -11,7 +11,7 @@ func _ready():
 	self.pressed.connect(cycle_state)
 	self.icon = icons[current_state]
 
-var icons : Array [Texture2D] = [preload("res://neutral.png"), preload("res://plus.png"), preload("res://minus.png")]
+var icons : Array [Texture2D] = [null, preload("res://plus.png"), preload("res://minus.png")]
 
 signal state_cycled(new_state : int)
 
