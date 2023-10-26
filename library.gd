@@ -204,6 +204,7 @@ func sort_entries_based_on_string_match(a : library_entry, b : library_entry, st
 var active_tag_filters : Dictionary
 
 func add_tag_filter(state : state_cycling_button.states, tag : String):
+	%"link input".text = ""
 	%"refresh tags".disabled = false
 	match state:
 		state_cycling_button.states.positive:
