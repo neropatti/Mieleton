@@ -184,12 +184,12 @@ func sort_entries_based_on_filename(a : library_entry, b : library_entry):
 func sort_entries_based_on_string_match(a : library_entry, b : library_entry, string : String, string_lower : String):
 	var a_title := a.title.to_lower()
 	var b_title := b.title.to_lower()
-	var a_score : int = a_title.similarity(string_lower) + int(a_title.begins_with(string_lower))
+	var a_score : int = int(a_title.begins_with(string_lower)) + int(a_title.contains(string_lower))
 	for location in a.locations:
 		if location.begins_with(string):
 			a_score += 1
 			break
-	var b_score : int = b_title.similarity(string_lower) + int(b_title.begins_with(string_lower))
+	var b_score : int = int(b_title.begins_with(string_lower)) + int(b_title.contains(string_lower))
 	for location in b.locations:
 		if location.begins_with(string):
 			b_score += 1
