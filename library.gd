@@ -156,13 +156,18 @@ func _on_link_input_text_changed(new_text : String):
 		new_button.state_cycled.connect(add_tag_filter.bind(tag))
 		new_button.right_clicked.connect(edit_tag.bind(tag))
 	
+	var tag_count : int = 0
+	
 	for tag in neutral_tags:
+		tag_count += 1
 		var new_button := state_cycling_button.new()
 		%"autofill suggestion list".add_child(new_button)
 		new_button.text = tag
 		new_button.current_state = state_cycling_button.states.neutral
 		new_button.state_cycled.connect(add_tag_filter.bind(tag))
 		new_button.right_clicked.connect(edit_tag.bind(tag))
+		if tag_count > 50:
+			break
 	
 	print("Visible entries: %s" % visible_entries.size())
 	
