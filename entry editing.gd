@@ -88,7 +88,7 @@ func _on_tag_input_text_changed(new_text : String):
 #	var sort_callable : Callable = sort_tags_based_on_how_many_entries_have_them.bind(tags)
 	tags_sorted.sort_custom(sort_callable)
 	for tag in tags_sorted:
-		if tag.begins_with(new_tag):
+		if tag.contains(new_tag) or new_tag.is_empty():
 			if selected_entry.tags.has(tag):
 				continue
 			var new_button := Button.new()
@@ -97,7 +97,7 @@ func _on_tag_input_text_changed(new_text : String):
 			new_button.pressed.connect(entry_add_tag.bind(tag))
 	selected_entry.tags.sort_custom(sort_callable)
 	for tag in selected_entry.tags:
-		if tag.begins_with(new_tag):
+		if tag.contains(new_tag) or new_tag.is_empty():
 			var new_button := Button.new()
 			new_button.text = tag + " (" + str(tags[tag]["how_many_entries_have_this_tag"]) + ")"
 			%"entry tag matches".add_child(new_button)
