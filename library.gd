@@ -140,6 +140,8 @@ func _on_link_input_text_changed(new_text : String):
 	var entries_that_still_match_the_search_string_reborn : Array [Node] = []
 	
 	for entry in entries_that_still_match_the_search_string:
+		if not is_instance_valid(entry) or entry == null:
+			continue
 		var entry_title : String = entry.title.to_lower()
 		var string_lower = new_text.to_lower()
 		var entry_score : int = int(entry_title.begins_with(string_lower)) + int(entry_title.contains(string_lower))
