@@ -13,6 +13,7 @@ var selected_entry : library_entry:
 			return
 		selected_entry = value
 		%thumbnail.texture = value.thumbnail_texture
+		value.thumbnail_changed.connect(%thumbnail.set.bind("texture"))
 		%"name edit".text = value.title
 		for child in %"links".get_children():
 			child.queue_free()

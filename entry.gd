@@ -17,6 +17,8 @@ var score : float = 0.0:
 		%"score label".text = str(score)
 
 signal data_updated
+signal thumbnail_changed(new_texture : Texture2D)
+signal title_changed(new_title : String)
 
 func refresh_primary_link():
 	var new_link : String = locations[0]
@@ -41,6 +43,7 @@ func set_title(new_title : String):
 	%title.text = new_title
 	%title.tooltip_text = new_title
 	data_updated.emit()
+	title_changed.emit(new_title)
 
 ## Load an image from a PackedByteArray. Tries to parse the data as a JPG, PNG, WEBP, TGA & BMP image, returning the first one that succeeds.
 func load_image_from_buffer(buffer : PackedByteArray) -> Image:
@@ -111,6 +114,7 @@ func set_thumbnail(thumbnail_url : String):
 			var texture := ImageTexture.create_from_image(img)
 			%thumbnail.texture = texture
 			thumbnail_texture = texture
+			thumbnail_changed.emit(texture)
 		else:
 			var request_result : Array = await UrlFetcher.fetch_url(thumbnail_link)
 			if request_result[0] == OK:
@@ -148,6 +152,7 @@ func parse_image(body : PackedByteArray):
 	var texture := ImageTexture.create_from_image(img)
 	%thumbnail.texture = texture
 	thumbnail_texture = texture
+	thumbnail_changed.emit(texture)
 
 func _on_webpage_fetcher_request_completed(result : int, response_code : int, headers : PackedStringArray, body : PackedByteArray):
 #	print("Webpage headers: ", headers)
