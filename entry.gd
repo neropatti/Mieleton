@@ -91,7 +91,7 @@ func parse_webpage(body : PackedByteArray):
 #	print(info)
 	
 	if info.has("og:title"):
-		set_title(info["og:title"])
+		set_title(String(info["og:title"]).xml_unescape())
 	elif info.has("og:site_name"):
 		set_title(info["og:site_name"])
 	
