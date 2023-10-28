@@ -34,4 +34,9 @@ autowrap_mode = 3
 clip_text = true
 text_overrun_behavior = 3
 
+[node name="score label" type="Label" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
 [connection signal="gui_input" from="." to="." method="_on_gui_input"]

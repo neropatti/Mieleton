@@ -11,6 +11,11 @@ var thumbnail_texture : Texture2D
 
 var filename : String
 
+var score : float = 0.0:
+	set(value):
+		score = value
+		%"score label".text = str(score)
+
 signal data_updated
 
 func refresh_primary_link():
