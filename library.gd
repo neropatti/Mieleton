@@ -127,6 +127,7 @@ func _on_link_input_text_changed(new_text : String):
 	%"refresh tags".disabled = true
 	
 	var all_entries : Array [Node] = %items.get_children()
+	var visible_entries := all_entries.filter(func only_visible_elements(entry : Node): return entry.visible)
 	
 	print(new_text, " begins with ", previous_text, ": ", new_text.begins_with(previous_text))
 	
@@ -174,8 +175,14 @@ func _on_link_input_text_changed(new_text : String):
 		if active_tag_filters.has(tag):
 			visible_tags.append(tag)
 		else:
-			for entry in all_entries:
+			var an_entry_did_not_have_this_tag : bool = false
+			var an_entry_had_this_tag : bool = false
+			for entry in visible_entries:
 				if entry.tags.has(tag):
+					an_entry_had_this_tag = true
+				else:
+					an_entry_did_not_have_this_tag = true
+				if an_entry_did_not_have_this_tag and an_entry_had_this_tag:
 					visible_tags.append(tag)
 					break
 	
@@ -184,7 +191,7 @@ func _on_link_input_text_changed(new_text : String):
 		var visible_entries_count : int = 0
 		for tag in visible_tags:
 			tag_scores[tag] = 0 as int
-		for entry in all_entries:
+		for entry in visible_entries:
 			if entry is library_entry:
 				visible_entries_count += 1
 				for tag in visible_tags:
@@ -305,7 +312,6 @@ func add_tag_filter(state : state_cycling_button.states, tag : String):
 				break
 	if not Input.is_action_pressed("don't clear text field"):
 		%"link input".text = ""
-		_on_link_input_text_changed("")
 
 func edit_tag(tag : String):
 	print("Edit tag: %s" % tag)
