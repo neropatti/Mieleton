@@ -9,17 +9,23 @@ func add_tags(new_tags : Dictionary):
 
 var selected_entry : library_entry:
 	set(value):
+		if selected_entry != null:
+			selected_entry.thumbnail_changed.disconnect(refresh_thumbnail)
 		if value == null:
+			selected_entry = value
 			return
 		selected_entry = value
 		%thumbnail.texture = value.thumbnail_texture
-		value.thumbnail_changed.connect(%thumbnail.set.bind("texture"))
+		value.thumbnail_changed.connect(refresh_thumbnail)
 		%"name edit".text = value.title
 		for child in %"links".get_children():
 			child.queue_free()
 		for link in value.locations:
 			add_link_label(link)
 		_on_tag_input_text_changed("")
+
+func refresh_thumbnail(new_thumbnail : Texture2D):
+	%thumbnail.texture = new_thumbnail
 
 func add_link_label(link : String):
 	var link_object : link_container = preload("res://link_container.tscn").instantiate()
