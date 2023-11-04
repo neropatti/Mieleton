@@ -67,6 +67,11 @@ func sort_tags_based_on_how_many_entries_have_them(a : String, b : String, tag_d
 		return false
 
 func _on_tag_input_text_changed(new_text : String):
+	
+	$"VBoxContainer/HBoxContainer3/tag stuff/HBoxContainer/ScrollContainer".scroll_vertical = 0
+	$"VBoxContainer/HBoxContainer3/tag stuff/HBoxContainer/ScrollContainer2".scroll_vertical = 0
+	# Reset the scroll when typing :)
+	
 	var new_tag := new_text.to_lower()
 	for container in [%"global tag matches", %"entry tag matches"]:
 		for child in container.get_children():

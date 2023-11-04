@@ -122,6 +122,9 @@ func _on_link_input_text_changed(new_text : String):
 		print("We waited!!")
 		return
 	
+	$VBoxContainer/ScrollContainer.scroll_vertical = 0
+	# Reset the scroll when typing :)
+	
 	we_waiting = true
 	%"sort refresh wait timer".start()
 	%"refresh tags".disabled = true
