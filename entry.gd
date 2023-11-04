@@ -1,7 +1,7 @@
 extends VBoxContainer
 class_name library_entry
 
-var tags : Array [StringName]
+var tags : Array [String]
 
 var locations : Array [String]
 var title : String

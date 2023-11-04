@@ -24,10 +24,10 @@ func _ready():
 		var title : String = entry_data["title"]
 		var thumbnail_link : String = entry_data["thumbnail_link"]
 		var _tags : Array = entry_data["tags"]
-		var tags : Array [StringName]
+		var tags : Array [String]
 		tags.resize(_tags.size())
 		for i in tags.size():
-			var tag := StringName(_tags[i])
+			var tag := String(_tags[i])
 			tags[i] = tag
 			if not all_tags.has(tag):
 				all_tags[tag] = 0
@@ -61,10 +61,10 @@ func new_link_entry(entry_data : Dictionary):# -> Control:
 	var title : String = entry_data["title"]
 	var thumbnail_link : String = entry_data["thumbnail_link"]
 	var _tags : Array = entry_data["tags"]
-	var tags : Array [StringName]
+	var tags : Array [String]
 	tags.resize(_tags.size())
 	for i in tags.size():
-		var tag := StringName(_tags[i])
+		var tag := String(_tags[i])
 		tags[i] = tag
 	var new_link_entry := link_entry.instantiate()
 	new_link_entry.locations = locations

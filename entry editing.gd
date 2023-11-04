@@ -4,7 +4,7 @@ var tags : Dictionary
 
 func add_tags(new_tags : Dictionary):
 	for new_tag in new_tags:
-		var tag := StringName(new_tag)
+		var tag := String(new_tag)
 		tags[tag] = {"how_many_entries_have_this_tag" : new_tags[tag]}
 
 var selected_entry : library_entry:
@@ -110,7 +110,7 @@ func _on_tag_input_text_changed(new_text : String):
 			%"entry tag matches".add_child(new_button)
 			new_button.pressed.connect(entry_erase_tag.bind(tag))
 
-func entry_erase_tag(tag : StringName):
+func entry_erase_tag(tag : String):
 	selected_entry.tags.erase(tag)
 	selected_entry.save_to_file()
 	tags[tag]["how_many_entries_have_this_tag"] -= 1
@@ -119,7 +119,7 @@ func entry_erase_tag(tag : StringName):
 	%"tag input".grab_focus()
 	_on_tag_input_text_changed("")
 
-func entry_add_tag(new_tag : StringName):
+func entry_add_tag(new_tag : String):
 	if not tags.has(new_tag):
 		tags[new_tag] = {"how_many_entries_have_this_tag" : 0}
 	if not selected_entry.tags.has(new_tag):
@@ -134,7 +134,7 @@ func entry_add_tag(new_tag : StringName):
 
 func _on_tag_input_text_submitted(new_text : String):
 	%"tag input".text = ""
-	entry_add_tag(StringName(new_text.to_lower()))
+	entry_add_tag(String(new_text.to_lower()))
 
 func save_to_file():
 	var file := FileAccess.open("user://tags", FileAccess.WRITE)
