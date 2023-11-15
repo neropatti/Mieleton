@@ -3,6 +3,11 @@ extends Control
 var link_entry := preload("res://entry.tscn")
 
 func _ready():
+	
+	if not FileAccess.file_exists("user://disable notice"):
+		var notice_screen = preload("res://notice.tscn").instantiate()
+		add_sibling.bind(notice_screen).call_deferred()
+	
 	DisplayServer.window_set_drop_files_callback(_os_dropped_files)
 	var all_tags : Dictionary = {}
 	for file_name in DirAccess.get_files_at("user://entries/"):
@@ -37,7 +42,8 @@ func _ready():
 		%items.move_child(new_link_entry, 0)
 		new_link_entry.locations = locations
 		new_link_entry.set_title(title)
-		new_link_entry.set_thumbnail(thumbnail_link)
+		new_link_entry.set_thumbnail.bind(thumbnail_link, false).call_deferred()
+#		new_link_entry.set_thumbnail(thumbnail_link)
 		new_link_entry.tags = tags
 		new_link_entry.filename = file_name
 		new_link_entry.clicked.connect(open_tag_editor)

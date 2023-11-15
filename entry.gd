@@ -103,22 +103,29 @@ func parse_webpage(body : PackedByteArray):
 		# Potential security implications?
 		set_thumbnail(info["og:image"])
 
-func set_thumbnail(thumbnail_url : String):
-		thumbnail_link = thumbnail_url
-		data_updated.emit()
-		# TODO: Do some checks to see that this URL is valid
-		# Potential security implications?
-		if Cache.has_cache_entry(thumbnail_link, "image"):
-			var img_data : PackedByteArray = Cache.get_cache_entry(thumbnail_link)
-			var img := load_image_from_buffer(img_data)
-			var texture := ImageTexture.create_from_image(img)
-			%thumbnail.texture = texture
-			thumbnail_texture = texture
-			thumbnail_changed.emit(texture)
-		else:
-			var request_result : Array = await UrlFetcher.fetch_url(thumbnail_link)
-			if request_result[0] == OK:
-				_on_thumbnail_fetcher_request_completed(request_result[0], request_result[1], request_result[2], request_result[3])
+func set_thumbnail(thumbnail_url : String, update_data : bool = true):
+	if not self.get_rect().intersects(get_viewport_rect()):
+		# Hack to make loading the app faster :)
+		await get_tree().create_timer(randf_range(1.0, 16.0)).timeout
+	thumbnail_link = thumbnail_url
+	if update_data: data_updated.emit()
+	# TODO: Do some checks to see that this URL is valid
+	# Potential security implications?
+	if Cache.has_cache_entry(thumbnail_link, "image"):
+		var img_data : PackedByteArray = Cache.get_cache_entry(thumbnail_link)
+		var img := load_image_from_buffer(img_data)
+		var orig_size = img.get_size()
+		var new_size = orig_size / (orig_size[orig_size.max_axis_index()] / 640.0)
+		# Smaller image size = less memory usage :)
+		img.resize(new_size.x, new_size.y, Image.INTERPOLATE_CUBIC)
+		var texture := ImageTexture.create_from_image(img)
+		%thumbnail.texture = texture
+		thumbnail_texture = texture
+		thumbnail_changed.emit(texture)
+	else:
+		var request_result : Array = await UrlFetcher.fetch_url(thumbnail_link)
+		if request_result[0] == OK:
+			_on_thumbnail_fetcher_request_completed(request_result[0], request_result[1], request_result[2], request_result[3])
 
 func is_valid_meta_tag(meta_tag : String) -> bool:
 	if meta_tag.contains("property=\"") and meta_tag.contains("content=\""):

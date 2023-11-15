@@ -23,6 +23,10 @@ config/icon="res://icon.svg"
 Cache="*res://cache.gd"
 UrlFetcher="*res://url fetcher.gd"
 
+[display]
+
+window/size/mode=2
+
 [filesystem]
 
 import/blender/enabled=false

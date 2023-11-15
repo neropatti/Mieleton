@@ -1,0 +1,79 @@
+[gd_scene load_steps=2 format=3 uid="uid://dru3r4m48omdx"]
+
+[ext_resource type="Script" path="res://notice.gd" id="1_dhbfi"]
+
+[node name="notice" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_dhbfi")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="header" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "NOTICE:"
+horizontal_alignment = 1
+
+[node name="body" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="1" type="Label" parent="VBoxContainer/body"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Mieletön is available for free at:"
+horizontal_alignment = 1
+
+[node name="2" type="Label" parent="VBoxContainer/body"]
+layout_mode = 2
+mouse_filter = 1
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 24
+text = "https://neropatti.com/mieleton"
+horizontal_alignment = 1
+
+[node name="3" type="Label" parent="VBoxContainer/body"]
+layout_mode = 2
+mouse_filter = 1
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 24
+text = "https://neropatti.itch.io/mieleton"
+horizontal_alignment = 1
+
+[node name="4" type="Label" parent="VBoxContainer/body"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "If you paid for this software, you should request a refund."
+horizontal_alignment = 1
+
+[node name="don\'t show again" type="CheckBox" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Don't show this notice again"
+
+[node name="ok" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "OK"
+
+[connection signal="pressed" from="VBoxContainer/ok" to="." method="_on_ok_pressed"]
