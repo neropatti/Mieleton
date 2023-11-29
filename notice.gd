@@ -7,7 +7,7 @@ func _ready():
 func _on_ok_pressed():
 	
 	if $"VBoxContainer/don't show again".button_pressed:
-		var asd = FileAccess.open("user://disable notice", FileAccess.WRITE)
+		var asd = FileAccess.open("user://disable notice 2", FileAccess.WRITE)
 		asd.store_string(" ")
 	
 	self.queue_free()

@@ -60,10 +60,38 @@ theme_override_font_sizes/font_size = 24
 text = "https://neropatti.itch.io/mieleton"
 horizontal_alignment = 1
 
-[node name="4" type="Label" parent="VBoxContainer/body"]
+[node name="5" type="Label" parent="VBoxContainer/body"]
 layout_mode = 2
+mouse_filter = 1
+mouse_default_cursor_shape = 2
 theme_override_font_sizes/font_size = 24
-text = "If you paid for this software, you should request a refund."
+text = "https://github.com/neropatti/Mieleton/"
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="license notice" type="Label" parent="VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 1
+theme_override_font_sizes/font_size = 14
+text = "Mieletön - Link archive with tags
+    Copyright (C) 2023 neropatti
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>."
 horizontal_alignment = 1
 
 [node name="don\'t show again" type="CheckBox" parent="VBoxContainer"]

@@ -4,7 +4,7 @@ var link_entry := preload("res://entry.tscn")
 
 func _ready():
 	
-	if not FileAccess.file_exists("user://disable notice"):
+	if not FileAccess.file_exists("user://disable notice 2"):
 		var notice_screen = preload("res://notice.tscn").instantiate()
 		add_sibling.bind(notice_screen).call_deferred()
 	
